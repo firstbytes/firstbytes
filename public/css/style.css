@@ -1,0 +1,37 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+body {
+  /*padding: 50px;*/
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: #222;
+}
+
+a {
+  color: #00B7FF;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  font: 32px 'Codystar';
+  padding: 10px;
+  text-align: center;
+}
+
+.sandbox {
+    border: none;
+    overflow: hidden;
+    /*position: absolute;*/
+    /*margin-left: 710px;*/
+    float: right;
+}
+
+.editor {
+    /*width: 700px;*/
+    position: absolute;
+    display: block;
+    margin-right: 510px;
+    height: 500px;
+}

@@ -1,0 +1,12 @@
+doctype 5
+html
+  head
+    title Canvas
+    link(rel="stylesheet", href="/css/canvas.css")
+    //- todo require.js
+    script(src="/components/zepto/zepto.js")
+    script(src="/components/processing/processing.js")
+    script(src="/js/fbs.js")
+  body
+    canvas#canvas(width="500", height="500")
+    script(src="data:text/javascript,;", id="canvas-script")
