@@ -1,21 +1,47 @@
 // todo require.js
 // processing, zepto js
-$(function() {
-    var canvas, $body;
-    window.kill = function() {}; // global hack for now
 
-    // todo attach p's own properties to window.
-    // so that we intentionally add them to global space.
+// this is super basic and very naive about user input
+// have a fair amount of clean up to do here, but "working"
+$(function() {
+    var canvas, $body, size = 500;
+    window.kill = function() {}; // global hack for now
     canvas = $("#canvas").get(0);
     $body = $("body");
 
     $(window).on("message", function(msg) {
-        var draw, canvas, code, $script;
+        var draw, canvas, code, $script, build;
         kill();
-        code = "data:text/javascript," + encodeURI('var init = function(p){' + msg.data + '}; var processor = new Processing(canvas, init); kill = function(){console.log("Reseting");processor.exit();}');
+        code = msg.data;
+        // super hacky check to decide how to build the source uri
+        // should consider something like structeredjs for inspecting source code
+        build = (code.indexOf('FB.draw') === -1) ? buildSrcSimple : buildSrc;
+        code = build(msg.data);
         $("#canvas-script").remove();
         $script = $("<script></script>").attr("id", "canvas-script").attr("src", code);
         $body.append($script);
-        // console.log("CHILD", msg.data, code);
     }, false);
+
+    var buildSrcSimple = function(src) {
+        // don't require defining draw/setup functions
+        // think we always want to require the namespacing for now
+        // this may change if we seek interoperability with KA sketches
+        src = 'FB.draw = function() {' + src + ';};';
+        return buildSrc(src);
+    };
+    var buildSrc = function(src) {
+        src = 'var FB = new Processing(canvas, function(FB){' +
+            'FB.width = ' + size + ';' +
+            'FB.height = ' + size + ';' +
+            src + '\n;' +
+        '}); kill = function(){FB.exit();}';
+        return duri(src);
+    };
+    // var buildSrcKA = function() {
+    // put processing.js properties into global space
+    // to replicate KA?
+    // };
+    var duri = function(src) {
+        return "data:text/javascript," + encodeURI(src);
+    };
 });

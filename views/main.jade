@@ -8,16 +8,18 @@ html
     script(src="http://localhost:35729/livereload.js")
     script(src="/components/zepto/zepto.js")
     script(src="/components/ace-builds/src-noconflict/ace.js")
-    //- script(src="/components/processing/processing.js")
     script(src="/js/editor.js")
   body
     header First Bytes Society
+    div#error
     iframe#sandbox(class="sandbox",src="/canvas",width="500", height="500", scrolling="no")
     div#editor(class="editor").
-        p.width = 500;
-        p.height = 500;
-        p.draw = function() {
-            p.background(0);
-            p.fill(100);
-            p.rect(0, 10, 100, 200);
+        // Set up some variables
+        var x = 0, white = 255, black = 0;
+        // Draw our frames!
+        FB.draw = function() {
+            FB.background(black);
+            FB.fill(white);
+            FB.rect(x, 10, 100, 200);
+            x = x + 1;
         };
