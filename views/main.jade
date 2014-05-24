@@ -6,21 +6,12 @@ html
     link(rel="stylesheet", href="/css/style.css")
     //- todo require.js
     script(src="http://localhost:35729/livereload.js")
-    script(src="/components/zepto/zepto.js")
+    //- jquery for now. repalce with zepto again once modules are worked in
+    //- script(src="/components/zepto/zepto.js")
+    script(src="/components/jquery/dist/jquery.js")
+    script(src="/components/knockout/dist/knockout.js")
+    script(src="/components/easyModal.js/jquery.easyModal.js")
     script(src="/components/ace-builds/src-noconflict/ace.js")
-    script(src="/js/editor.js")
   body
     header First Bytes Society
-    div#error
-    iframe#sandbox(class="sandbox",src="/canvas",width="500", height="500", scrolling="no")
-    div#editor(class="editor").
-        // Set up some variables
-        var x = 0, white = 255, black = 0;
-        FB.background(black);
-        FB.fill(white);
-
-        // Animate with frames!
-        FB.draw = function() {
-            FB.rect(x, 10, 100, 200);
-            x = x + 1;
-        };
+    block content

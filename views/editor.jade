@@ -1,0 +1,78 @@
+extends main
+
+block content
+    style.
+        @import url("/css/form.css");
+    div.error(data-bind="text: err, visible: err")
+    div.message(data-bind="text: message, visible: message")
+    nav#menu
+        ul
+            li
+                input#projectname(placeholder="Project Name", data-bind="value: project() && project().name")
+            //- li#lastsaved Last saved
+            li.button#save(data-bind="click: csave") Save
+            //- li.button#revert Revert
+            //- li.button#screenshot Snap a Screenshot TODO
+            //- li.button#signup-button Sign Up Implicit only
+            li.button#login-button(data-bind="visible: unauthenticated, click: cshowsignin") Sign In
+            li.button#logout-button(data-bind="visible: authenticated, click: csignout") Sign Out
+            li.button#projects-button(data-bind="visible: authenticated, click: cshowprojects") Projects
+            li(data-bind="text: user() && user().email") --
+    iframe#sandbox(class="sandbox", src="/canvas", width="500", height="500", scrolling="off")
+    div#editor(class="editor").
+        // Welcome to FirstBytes! You are looking at your first "source code".
+        // The lines with these funny "//" slashes in front are called "comments"
+        // and are ignored by the computer. The other lines are instructions for
+        // the computer to follow. Let's dig in!
+
+        // Choose a blue background
+        FB.background(FB.BLUE);
+
+        // Pick up a white paint brush
+        FB.fill(FB.WHITE);
+
+        // Paint a rectangle (will use your brush you just picked up)
+        FB.rect(10, 50, 100, 200);
+
+        // What's next?
+        // 1. Change the numbers above! For example,
+        // make change 10 to 250. Can you you figure out
+        // what the numbers do?
+        // 2. Change the colors. You can try RED, GREEN, BLUE,
+        // BROWN, ORANGE, PURPLE, PINK, YELLOW, BLACK, and WHITE.
+        // 3. Try to add another rectangle. Copy and paste
+        // the rect line and play with the numbers.
+        // 4. Now that you have multiple rectangles, make one rectangle
+        // green and one rectangle yellow.
+        // 5. Can you make a face using multiple rectangles?
+    div#overlay(data-bind="visible: showmodal, click: chidemodal")
+    div#login.modal(data-bind="visible: showlogin")
+        div.error(data-bind="text: err, visible: err")
+        h1 Sign In
+        form(id="login-form", method="post", class="simple", action="#", data-bind="submit: cformlogin")
+            input(name="email", placeholder="Email", autocomplete="off")
+            //- , data-bind="value: formsloginemail"
+            input(name="password", placeholder="Password", autocomplete="off", type="password")
+            //- , data-bind="value: formsloginpassword"
+            button(type="submit") Sign In
+        h3 or
+        h1 Create Account
+        form(id="signup-form", method="post", class="simple", action="#", data-bind="submit: cformsignup")
+            input(name="name", placeholder="Name", autocomplete="off")
+            //- , data-bind="value: formsignupname"
+            input(name="email", placeholder="Email", autocomplete="off")
+            //- , data-bind="value: formsignupemail"
+            input(name="password", placeholder="Password", autocomplete="off", type="password")
+            //- , data-bind="value: formsignuppassword"
+            button(type="submit") Sign up
+    div#projects.modal(data-bind="visible: showprojects")
+        h1 Projects
+        ul(data-bind="foreach: projects")
+            li(data-bind="text: name")
+
+    script(type="text/javascript", src="/js/dom/appvm.js")
+    script(type="text/javascript", src="/js/auth.js")
+    script(type="text/javascript", src="/js/signup.js")
+    script(type="text/javascript", src="/js/repo.js")
+    script(type="text/javascript", src="/js/dom/editor.js")
+    script(type="text/javascript", src="/js/dom/user.js")

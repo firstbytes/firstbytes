@@ -22,3 +22,32 @@ Build upon the ideas that make the open source community so great. Promote shari
 
 ### Be the megaphone
 The only thing more satisfying than seeing your code work, is seeing others use your code. Provide a platform that makes it easy for students to share their finished projects with friends and peers. Not only should this be motivating to the student, but hopefully it will produce a domino effect.
+
+## Development
+
+### Installation
+
+Requrements (older versions may work but have not been tested)
+
+ - [node.js](http://nodejs.org/) (0.10.0+)
+ - [npm](https://www.npmjs.org/)  (1.4.0+)
+ - [bower](http://bower.io/) (1.2.7+)
+ - [grunt](http://gruntjs.com/) (0.1.9+)
+
+To get a local version of First Bytes up and running:
+
+```bash
+git clone git@github.com:firstbytes/firstbytes.git
+cd firstbytes
+npm install
+bower install
+grunt
+```
+
+From here on, just running `grunt` from this directory will start up the app.
+
+## Contributing
+
+First Bytes Society App is open source under the MIT license. First Bytes will only be successful if the open source community rallies behind it. To contribute, please fork the repository, work on a topic branch, and submit open a pull request via GitHub.
+
+Having said that, the project is still _very_ early on in development and may change rapidly. Before diving deep into anything, please open an issue outling the work you'd like to do to make sure it doesn't overlap with the work of others or won't soon be irrelevant. We hope to open up our Trello board soon which is where most of the dev roadmap and feature suggestions will be mulled over.
