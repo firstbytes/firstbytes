@@ -1,8 +1,8 @@
 # First Bytes Society
 
-This is the early stages of the First Bytes Society's web based programming education environment. It is based on the work of many excellent people and projects that preceeded it, like _why's [Hackety Hack](http://hackety.com/), Khan Academy's [Computer Programming Coursework](https://www.khanacademy.org/computing/cs/), John Resig's [ProcessingJS](http://processingjs.org/), and [Codecademy](http://codecademy.com), to name a few.
+This is the early stages of the First Bytes Society's web based programming education environment. It is based on the work of many excellent people and projects that preceded it, like _why's [Hackety Hack](http://hackety.com/), Khan Academy's [Computer Programming Coursework](https://www.khanacademy.org/computing/cs/), John Resig's [ProcessingJS](http://processingjs.org/), and [Codecademy](http://codecademy.com), to name a few.
 
-The First Bytes Society App gets right down to business by immersing the student in legible code from the beginning and encouraing exploration as a means of accidentally learning programming.
+The First Bytes Society App gets right down to business by immersing the student in legible code from the beginning and encouraging exploration as a means of accidentally learning programming.
 
 ## Manifesto
 
@@ -15,7 +15,7 @@ The fact of the matter is most of software people had an initial _hook_ that ope
 Get students looking at code immediately. Immerse them in it. Promote exploration into the code by providing easy ways for students to manipulate code and see the impact of their edits immediately.
 
 ### Provide quick feedback channels
-Banging your head against a table because you can't figure out why your code isn't running is frustrating for anyone, let alone a beginner. Frustation is detrimental to excitement. Excitement and motivation are required to learn programming. Limit frustration for the student by providing great feedback channels. Provide easy docs, great error feedback, provide easy access to mentors via chat, etc.
+Banging your head against a table because you can't figure out why your code isn't running is frustrating for anyone, let alone a beginner. Frustration is detrimental to excitement. Excitement and motivation are required to learn programming. Limit frustration for the student by providing great feedback channels. Provide easy docs, great error feedback, provide easy access to mentors via chat, etc.
 
 ### Encourage looking over the shoulder
 Build upon the ideas that make the open source community so great. Promote sharing code, work, and stories from day one. Inform students they should use their peers work to help them. Make it easy for students to share their work with others in the community. Make it easy to find other's work. This isn't your typical classroom environment. Copying *is encouraged*!
