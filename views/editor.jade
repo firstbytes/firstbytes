@@ -10,12 +10,9 @@ block content
             li
                 input#projectname(placeholder="Project Name", data-bind="value: project() && project().name")
             li#save-status(data-bind="text: saveStatus") --
-            //- Last saved at X
-            //- li#lastsaved Last saved
             li.button#save(data-bind="click: csave") Save
             //- li.button#revert Revert
-            //- li.button#screenshot Snap a Screenshot TODO
-            //- li.button#signup-button Sign Up Implicit only
+            //- li.button#screenshot Snap a Screenshot
             li.button#login-button(data-bind="visible: unauthenticated, click: cshowsignin") Sign In
             li.button#logout-button(data-bind="visible: authenticated, click: csignout") Sign Out
             li.button#projects-button(data-bind="visible: authenticated, click: cshowprojects") My Projects
@@ -29,19 +26,14 @@ block content
         h1 Sign In
         form(id="login-form", method="post", class="simple", action="#", data-bind="submit: cformlogin")
             input(name="email", placeholder="Email", autocomplete="off")
-            //- , data-bind="value: formsloginemail"
             input(name="password", placeholder="Password", autocomplete="off", type="password")
-            //- , data-bind="value: formsloginpassword"
             button(type="submit") Sign In
         h3 or
         h1 Create Account
         form(id="signup-form", method="post", class="simple", action="#", data-bind="submit: cformsignup")
             input(name="name", placeholder="Name", autocomplete="off")
-            //- , data-bind="value: formsignupname"
             input(name="email", placeholder="Email", autocomplete="off")
-            //- , data-bind="value: formsignupemail"
             input(name="password", placeholder="Password", autocomplete="off", type="password")
-            //- , data-bind="value: formsignuppassword"
             button(type="submit") Sign up
     div#projects.modal(data-bind="visible: showprojects")
         h1 Projects

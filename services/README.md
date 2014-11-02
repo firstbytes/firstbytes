@@ -6,5 +6,5 @@
 
 ## Tactical
 
- - Try to organize in sensical directory (e.g. not just one big services directory)
+ - Try to organize in sensible directory (e.g. not just one big services directory)
  - Generic reusable stuff belongs in services/utils

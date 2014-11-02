@@ -11,14 +11,6 @@ var modelRoute = require("../routes/_model");
 
 var createSession;
 
-// todo put some auth middleware around get, put, delete
-// exports.get = modelRoute.get(User);
-// exports.put = modelRoute.put(User);
-// exports.post = modelRoute.post(User, function(req, res, instance) {
-//     instance.joined = new Date();
-// });
-// exports.delete = modelRoute.delete(User);
-
 // GET /user/ID/projects/?page=N&start=M
 exports.projects = function(req, res) {
   // res.send("json", {});

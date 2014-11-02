@@ -1,5 +1,14 @@
 /**
  * Factory for CRUD model routes
+ *
+ * Example usage (without auth middleware)
+ *
+ * exports.get = modelRoute.get(User);
+ * exports.put = modelRoute.put(User);
+ * exports.post = modelRoute.post(User, function(req, res, instance) {
+ *     instance.joined = new Date();
+ * });
+ * exports.delete = modelRoute.delete(User);
  */
 
 exports.get = function(model) {
