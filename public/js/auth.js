@@ -1,58 +1,70 @@
-// (function(g) {
-//     var auth = {};
+(function(g) {
+    // var signup = {};
+    // signup.bind = function(selector, callback) {
+    //     var $form, url, L;
+    //     L = {
+    //         ERROR: 'Looks like we have some problems creating your account. Make sure you fill out all required fields.',
+    //         SUCCESS: 'Saved!',
+    //     };
+    //     url = '/user/';
+    //     $form = $(selector);
+    //     // form must have a name, email, password.
+    //     // can have locale, joined, country, locality, region, postalCode.
+    //     $form.submit(function() {
+    //         $.ajax(url, {
+    //             type: 'post',
+    //             dataType: 'json',
+    //             data: $form.serialize(),
+    //             success: function(user, status, xhr) {
+    //                 callback(null, L.SUCCESS, user);
+    //             },
+    //             error: function(xhr) {
+    //                 callback(L.ERROR);
+    //             }
+    //         });
+    //         return false;
+    //     });
+    //     return $form;
+    // };
 
-//     auth.bind = function(selector, callback) {
-//         var $form, url, L;
-//         L = {
-//             ERROR: 'Uh... this is awkward. I don\'t seem to recognize you. Try to log in again.',
-//             SUCCESS: 'Hey! Welcome back my friend!',
-//         };
-//         url = '/user/auth/';
-//         $form = $(selector);
-//         // form must have a username and password field
-//         $form.submit(function() {
-//             $.ajax(url, {
-//                 type: 'post',
-//                 dataType: 'json',
-//                 data: $form.serialize(),
-//                 success: function(response, status, xhr) {
-//                     // todo pubsub this stuff?
-//                     callback(null, L.SUCCESS, response);
-//                 },
-//                 error: function(xhr) {
-//                     callback(L.ERROR);
-//                 }
-//             });
-//             return false;
-//         });
-//         return $form;
-//     };
+    var L = {
+        SIGNUP_ERROR: 'Looks like we have some problems creating your account. Make sure you fill out all required fields.',
+        SIGNUP_SUCCESS: 'Saved!',
+        ERROR: 'Uh... this is awkward. I don\'t seem to recognize you. Try to log in again.',
+        SUCCESS: 'Hey! Welcome back my friend!',
+    };
 
-//     auth.attachSession = function(user, token) {
-//         // todo pubsub here?
-//         localStorage['fb.user.email'] = user.email;
-//         localStorage['fb.user.name'] = user.name;
-//         localStorage['fb.user.id'] = user._id;
-//         localStorage['fb.token'] = token;
-//     };
+    // can have locale, joined, country, locality, region, postalCode.
+    g.signup = function(data, callback) {
+        var url = '/user/';
+        $.ajax(url, {
+            type: 'post',
+            dataType: 'json',
+            data: data,
+            success: function(response, status, xhr) {
+                // response.user, response.token
+                callback(null, response, L.SIGNUP_SUCCESS);
+            },
+            error: function(xhr) {
+                callback(L.SIGNUP_ERROR);
+            }
+        });
+    };
 
-//     auth.getSession = function() {
-//         if (!localStorage['fb.user.email']) return false;
-//         return {
-//             email: localStorage['fb.user.email'],
-//             name: localStorage['fb.user.name'],
-//             id: localStorage['fb.user.id'],
-//             token: localStorage['fb.token']
-//         };
-//     };
-
-//     auth.logout = function() {
-//         localStorage.clear();
-//     };
-
-//     auth.isAuthenticated = function() {
-//         return !!localStorage['fb.user.id'] && !!localStorage['fb.token'];
-//     };
-
-//     g.auth = auth;
-// })(window);
+    // form must have a username and password field
+    g.auth = function(data, callback) {
+        var url = '/user/auth/';
+        $.ajax(url, {
+            type: 'post',
+            dataType: 'json',
+            data: data,
+            success: function(response, status, xhr) {
+                // response.user, response.token
+                callback(null, response, L.SUCCESS);
+            },
+            error: function(xhr) {
+                callback(L.ERROR);
+            }
+        });
+    };
+})(window);

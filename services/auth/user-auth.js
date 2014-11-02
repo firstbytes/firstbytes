@@ -52,7 +52,7 @@ exports.lookup = function(username, password, callback) {
 // @param {req} Object Express/Connect req object
 // @param {userId} String id of user to check for
 // @param {function} callback (err, User)
-exports.userFromRequest = function(req, userId, callback) {
+exports.getUserFromRequest = function(req, userId, callback) {
     var token = req.get('token');
     if (!token || req.session[token] !== userId) {
         return callback(L.INVALID_TOKEN);

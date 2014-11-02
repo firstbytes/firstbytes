@@ -15,25 +15,25 @@ a {
 header {
   background: #333;
   color: #fff;
-  font: 32px 'Codystar';
+  font: 17px 'Codystar';
   padding: 10px;
-  text-align: center;
+  text-align: left;
 }
 
 .sandbox {
-    border: none;
-    overflow: hidden;
-    /*position: absolute;*/
-    /*margin-left: 710px;*/
-    float: right;
+  border: none;
+  overflow: hidden;
+  /*position: absolute;*/
+  /*margin-left: 710px;*/
+  float: right;
 }
 
 .editor {
-    /*width: 700px;*/
-    position: absolute;
-    display: block;
-    margin-right: 510px;
-    height: 500px;
+  /*width: 700px;*/
+  position: absolute;
+  display: block;
+  margin-right: 510px;
+  height: 500px;
 }
 
 /*Menu*/
@@ -57,22 +57,22 @@ nav ul li.button {
 
 /* Modals */
 .modal {
-    width: 300px;
-    background: #fff;
-    color: #333;
-    padding: 20px;
-    position: absolute;
-    left: 50%;
-    margin-left: -160px;
-    top: 100px;
-    z-index: 100;
+  width: 300px;
+  background: #fff;
+  color: #333;
+  padding: 20px;
+  position: absolute;
+  left: 50%;
+  margin-left: -160px;
+  top: 100px;
+  z-index: 100;
 }
 #overlay {
   background: #000;
   opacity: 0.5;
   height: 100%;
   width: 100%;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 99;
@@ -83,11 +83,19 @@ nav ul li.button {
   padding: 5px;
   font-family: Helvetica;
   font-size: 10px;
+  float: right;
+  text-align: right;
 }
 
 .error {
-    background: #eee;
-    border: solid 1px #ccc;
-    padding: 10px;
-    display: none;
+  background: #eee;
+  border: solid 1px #ccc;
+  padding: 10px;
+  display: none;
+  float: right;
+  text-align: right;
+}
+
+.projects {
+  cursor: pointer;
 }

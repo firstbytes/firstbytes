@@ -8,13 +8,14 @@
         GET_PROJECTS_ERROR: 'Uh oh. We were not able to fetch your projects. Make sure you are online.'
     };
 
-    repo.save = function(user, token, project, callback) {
+    repo.save = function(user_id, token, project, callback) {
         // todo saving revisions and pushing updates
         // instead of just creating new projects
         console.log(JSON.stringify(project));
         $.ajax('/project/', {
             type: 'post',
             dataType: 'json',
+            contentType: 'application/json',
             headers: {'token': token},
             data: project,
             success: function(response, status, xhr) {
@@ -26,9 +27,9 @@
         });
     };
 
-    repo.fetchAll = function(user, token, callback) {
+    repo.fetchAll = function(user_id, token, callback) {
         var url;
-        url = '/user/' + user._id + '/projects';
+        url = '/user/' + user_id + '/projects';
         $.ajax(url, {
             type: 'get',
             dataType: 'json',

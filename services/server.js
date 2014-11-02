@@ -36,8 +36,8 @@ app.set('view engine', 'jade');
 
 app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 // app.use(express.logger('dev'));
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 app.use(cookieParser('2z9sS2c0ksx'));
 app.use(session({secret: 'capital code horse pants', saveUninitialized: true, resave: true})); // todo hook in redis connect
 // app.use(express.methodOverride());
@@ -97,15 +97,11 @@ app.put('/project/:id/', routes.project.update);
 
 app.post('/user/auth/', routes.user.auth);
 app.post('/user/', routes.user.create);
+app.get('/user/:id/', routes.user.authFromToken);
+// app.put('/user/:id/', routes.user.?);
 
 app.get('/user/:id/projects/', routes.user.projects);
 // app.get('/user/:id/projects/public/', routes.user.publicprojects);
-
-// app.get('/user/:id/', routes.user.get);
-// app.post('/user/', routes.user.post);
-// app.put('/user/:id/', routes.user.put);
-// app.post('/user/:id/', routes.user.put); // overload
-// app.delete('/user/:id/', routes.user.delete);
 
 var listening = false;
 var listen = function() {

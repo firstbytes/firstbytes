@@ -27,6 +27,7 @@ var Project = require("../models/project.js");
 exports.create = function(req, res) {
     // todo use project manager
     var p = new Project(req.body);
+    console.log(req.body);
     // todo fix up this session stuff
     // console.log(req.session);
     // if (req.session.user != p.userId) return res.status(401).json({error: 'That is not you!'});
