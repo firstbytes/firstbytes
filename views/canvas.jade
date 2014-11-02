@@ -9,4 +9,44 @@ html
     script(src="/js/fbs.js")
   body
     canvas#canvas(width="500", height="500")
+    script().
+        // todo move this
+        // hack to overload, monkey patch some things into Processing.js
+        var _fb_init = function(FB, size) {
+            FB.size(size, size);
+            // Add in easy size constants
+            FB.WIDTH = size;
+            FB.HEIGHT = size;
+            // Add in easy color constants
+            FB.WHITE = 255;
+            FB.BLACK = 0;
+            FB.RED = FB.color(255, 0, 0);
+            FB.GREEN = FB.color(0, 255, 0);
+            FB.BLUE = FB.color(0, 0, 255);
+
+            FB.PURPLE = FB.color(0xAA, 0x00, 0xFF);
+            FB.PINK = FB.color(0xFF, 0x00, 0xFF);
+            FB.ORANGE = FB.color(0xFF, 0xD9, 0x00);
+            FB.YELLOW = FB.color(0xFF, 0xFF, 0x00);
+            FB.GREY = FB.GRAY = FB.color(100, 100, 100);
+            FB.BROWN = FB.color(0x4F, 0x4F, 0x13);
+
+            FB.DARKRED = FB.color(0x99, 0, 0);
+            FB.DARKGREEN = FB.color(0x33, 0x66, 0);
+            FB.DARKBLUE = FB.color(0, 0, 0x66);
+            FB.DARKPURPLE = FB.color(0x33, 0x00, 0x33);
+            FB.DARKPINK = FB.color(0x99, 0x00, 0x66);
+            FB.DARKORANGE = FB.color(0xFF, 0x33, 0x00);
+            FB.DARKYELLOW = FB.color(0xFF, 0xCC, 0x00);
+            FB.DARKGREY = FB.DARKGRAY = FB.color(0x33, 0x33, 0x33);
+            FB.DARKBROWN = FB.color(0x33, 0x33, 0);
+
+            FB.noStroke(); // (for now)
+
+            // evil, scary, but one less thing to explain?
+            //- $.extend(true, window, FB);
+            // can't do it like this causes too many conflicts
+            // will have to find another way.
+        };
+
     script(src="data:text/javascript,;", id="canvas-script")

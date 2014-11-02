@@ -1,0 +1,47 @@
+extends main
+
+block content
+    style.
+        @import url("/css/form.css");
+    nav#menu
+        div.error(data-bind="text: err, visible: err")
+        div.message(data-bind="text: message, visible: message")
+        ul
+            li
+                input#projectname(placeholder="Project Name", data-bind="value: project() && project().name")
+            li#save-status(data-bind="text: saveStatus") --
+            li.button#save(data-bind="click: csave") Save
+            //- li.button#revert Revert
+            //- li.button#screenshot Snap a Screenshot
+            li.button#login-button(data-bind="visible: unauthenticated, click: cshowsignin") Sign In
+            li.button#logout-button(data-bind="visible: authenticated, click: csignout") Sign Out
+            li.button#projects-button(data-bind="visible: authenticated, click: cshowprojects") My Projects
+            li.button#logout-button(data-bind="visible: authenticated, click: cnewproject") New Project
+            li(data-bind="text: username")
+    iframe#sandbox(class="sandbox", src="/canvas", width="500", height="500", scrolling="off")
+    div#editor(class="editor")
+    div#overlay(data-bind="visible: showmodal, click: chidemodal")
+    div#login.modal(data-bind="visible: showlogin")
+        div.error(data-bind="text: err, visible: err")
+        h1 Sign In
+        form(id="login-form", method="post", class="simple", action="#", data-bind="submit: cformlogin")
+            input(name="email", placeholder="Email", autocomplete="off")
+            input(name="password", placeholder="Password", autocomplete="off", type="password")
+            button(type="submit") Sign In
+        h3 or
+        h1 Create Account
+        form(id="signup-form", method="post", class="simple", action="#", data-bind="submit: cformsignup")
+            input(name="name", placeholder="Name", autocomplete="off")
+            input(name="email", placeholder="Email", autocomplete="off")
+            input(name="password", placeholder="Password", autocomplete="off", type="password")
+            button(type="submit") Sign up
+    div#projects.modal(data-bind="visible: showprojects")
+        h1 Projects
+        ul(data-bind="foreach: projects")
+            li(data-bind="text: name, click: $parent.cprojectselect")
+
+    script(type="text/javascript", src="/js/dom/appvm.js")
+    script(type="text/javascript", src="/js/auth.js")
+    script(type="text/javascript", src="/js/repo.js")
+    script(type="text/javascript", src="/js/dom/editor.js")
+    script(type="text/javascript", src="/js/state.js")
