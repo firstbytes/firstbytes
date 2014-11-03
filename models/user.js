@@ -35,7 +35,9 @@ schema.methods.checkPassword = function(pass) {
 };
 
 // a select group of attributes to return
-schema.methods.toResponse = utils.toResponse(['_id', 'email', 'locale', 'joined', 'name']);
+var editable = ['_id', 'email', 'locale', 'joined', 'name'];
+schema.methods.getEditable = function() { return editable; };
+schema.methods.toResponse = utils.toResponse(editable);
 
 schema.pre('save', function(next) {
     if (!this.joined) {

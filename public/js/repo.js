@@ -5,26 +5,38 @@
     repo = {};
     L = {
         SAVE_ERROR: 'Whoops! Looks like we were not able to save your code. Bummer. Make sure you are online.',
+        DATA_ERROR: 'Whoops! Looks like we were not able to save your code. Looks like we had trouble reading your program.',
         GET_PROJECTS_ERROR: 'Uh oh. We were not able to fetch your projects. Make sure you are online.'
     };
 
     repo.save = function(user_id, token, project, callback) {
-        // todo saving revisions and pushing updates
-        // instead of just creating new projects
-        console.log(JSON.stringify(project));
-        $.ajax('/project/', {
+        if (typeof project === 'string') {
+            project = JSON.parse(project);
+        }
+        if (typeof project !== 'object') {
+            return callback(L.DATA_ERROR);
+        }
+
+        var conf = {
             type: 'post',
             dataType: 'json',
             contentType: 'application/json',
             headers: {'token': token},
-            data: project,
+            data: JSON.stringify(project),
             success: function(response, status, xhr) {
                 callback(null, response);
             },
             error: function(xhr) {
                 callback(L.SAVE_ERROR);
             }
-        });
+        };
+
+        if (project._id) {
+            conf.type = 'put';
+            $.ajax('/project/' + project._id + '/', conf);
+        } else {
+            $.ajax('/project/', conf);
+        }
     };
 
     repo.fetchAll = function(user_id, token, callback) {

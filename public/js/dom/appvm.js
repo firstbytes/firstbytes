@@ -1,8 +1,9 @@
 // The beginning of KO integration. Need to pull in the stuff from
 // dom/editor.js and dom/user.js
+// requires moment.js, auth.js, repo.js
 (function(g) {
     var L = {
-        LAST_SAVED_AT: "Saved at ", // todo interpolation
+        LAST_SAVED_AT: "Saved ", // todo interpolation
         UNSAVED: "Unsaved",
         DEFAULT_USERNAME_TEXT: "Annonymous",
         MUST_LOGIN: "You must log in",
@@ -53,10 +54,17 @@
         self.dirty = ko.observable(false);
         self.err = ko.observable(null);
         self.message = ko.observable(null);
-        self.saveStatus = ko.observable(L.UNSAVED);
+        self.saveStatus = ko.observable('');
+        self.lastSaved = ko.observable(null);
 
         self.authenticated = ko.computed(function() { return !!self.session(); }, this);
         self.unauthenticated = ko.computed(function() { return !self.session(); }, this);
+
+        self.project.subscribe(function(value) {
+            // clear save status when project changes
+            self.saveStatus('');
+            self.lastSaved(null);
+        });
 
         // modals. these feel awkward here.
         modals = ['showlogin', 'showprojects'];
@@ -90,6 +98,8 @@
             self.message(null);
             self.err(null);
             self.dirty(false);
+            self.saveStatus('');
+            self.lastSaved(null);
             state.save();
         };
         populateKnockout = function(parsed) {
@@ -140,12 +150,16 @@
         };
         self.csave = function() {
             if (self.authenticated()) {
-                repo.save(self.user()._id(), self.session().token(), ko.toJSON(self.project()), function(err, response) {
+                // todo show some sort of saving network indicator
+                self.project().userId(self.user()._id()); // make sure we're setting the user id on the project
+                repo.save(self.user()._id(), self.session().token(), ko.toJS(self.project()), function(err, response) {
                     if (err) {
-                        self.saveStatus = L.UNABLE_TO_SAVE;
+                        self.err(L.UNABLE_TO_SAVE);
                         return;
                     }
-                    self.saveStatus = L.LAST_SAVED_AT + new Date();
+                    self.project(new Project(response));
+                    self.lastSaved(new Date());
+                    self.saveStatus(L.LAST_SAVED_AT + moment(self.lastSaved()).fromNow());
                     self.dirty(false);
                 });
             } else {
@@ -155,15 +169,17 @@
                 self.showlogin(true);
             }
         };
-
-        // // example of how to subscribe to observable updates... http://knockoutjs.com/documentation/observables.html
-        // self.project().source.subscribe(function(value) {
-        //     console.log("wut", value);
-        // });
     }
+
     // Main View Model
     g.appvm = new AppViewModel();
     ko.applyBindings(g.appvm);
+
+    // update save status (and potentially other things) on a regular basis
+    setInterval(function() {
+        var last = appvm.lastSaved();
+        if (last) appvm.saveStatus(L.LAST_SAVED_AT + moment(last).fromNow());
+    }, 30000);
 
     // Form View Model?
     // g.loginvm

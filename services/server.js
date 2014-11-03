@@ -14,6 +14,7 @@ var express = require('express'),
   bodyParser = require('body-parser'),
   cookieParser = require('cookie-parser'),
   session = require('express-session'),
+  connectredis = require('connect-redis'),
   favicon = require('serve-favicon');
   // passport = require('./auth/user-auth.js');
 
@@ -29,6 +30,8 @@ var env = process.env.NODE_ENV || 'development';
 
 // app setup
 var app = express();
+var RedisStore = connectredis(session);
+var redissession = new RedisStore({host: "127.0.0.1", port: "9491", disableTTL: true}); // todo use config
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.resolve(__dirname + '/../views'));
@@ -39,7 +42,8 @@ app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser('2z9sS2c0ksx'));
-app.use(session({secret: 'capital code horse pants', saveUninitialized: true, resave: true})); // todo hook in redis connect
+app.use(session({secret: 'capital code horse pants', saveUninitialized: true, resave: true, store: redissession}));
+
 // app.use(express.methodOverride());
 // app.use(app.router);
 app.use(express.static(path.resolve(__dirname + '/../public')));

@@ -39,9 +39,14 @@ block content
         h1 Projects
         ul(data-bind="foreach: projects")
             li(data-bind="text: name, click: $parent.cprojectselect")
+    //- div#lessons.modal(data-bind="visible: showlessons")
+    //-     h1 Lessons
+    //-     ul(data-bind="foreach: lessions")
+    //-         li(data-bind="text: name, click: $parent.cprojectselect")
 
     script(type="text/javascript", src="/js/dom/appvm.js")
     script(type="text/javascript", src="/js/auth.js")
     script(type="text/javascript", src="/js/repo.js")
     script(type="text/javascript", src="/js/dom/editor.js")
     script(type="text/javascript", src="/js/state.js")
+    script(type="text/javascript", src="/components/momentjs/moment.js")

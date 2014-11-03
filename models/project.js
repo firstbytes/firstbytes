@@ -5,8 +5,6 @@ var utils = require('../services/util/model.js');
 // For now it includes the source code, but this will soon change
 // to use version control or perhaps GridFS to store revisions
 
-// todo add instance methods (but don't make fat models)
-
 var STATE = {
     WIP: 1,
     PUBLISHED: 2,
@@ -27,7 +25,9 @@ var schema = mongoose.Schema({
     privacy: {type: Number, default: PRIVACY.PRIVATE}
 });
 
-schema.methods.toResponse = utils.toResponse(['name', 'source', 'state', 'userId', 'privacy', '_id']);
+var editable = ['name', 'source', 'state', 'userId', 'privacy', '_id'];
+schema.methods.getEditable = function() { return editable; };
+schema.methods.toResponse = utils.toResponse(editable);
 
 var Project = mongoose.model('Project', schema);
 Project.STATE = STATE;

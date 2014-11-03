@@ -50,13 +50,23 @@ exports.lookup = function(username, password, callback) {
 };
 
 // @param {req} Object Express/Connect req object
-// @param {userId} String id of user to check for
 // @param {function} callback (err, User)
-exports.getUserFromRequest = function(req, userId, callback) {
+exports.getUserFromRequest = function(req, callback) {
+    exports.getAndAssetUserFromRequest(req, false, function(err, user) {
+        callback(err, user);
+    });
+};
+
+// @param {req} Object Express/Connect req object
+// @param {userId} String user id to check against, if false will default
+// @param {function} callback (err, User)
+exports.getAndAssetUserFromRequest = function(req, userId, callback) {
     var token = req.get('token');
-    if (!token || req.session[token] !== userId) {
-        return callback(L.INVALID_TOKEN);
-    }
+    console.log(token);
+    if (!token) return callback(L.INVALID_TOKEN);
+    if (userId === false) userId = req.session[token];
+    console.log(req.session[token], userId);
+    if (req.session[token] !== userId) return callback(L.INVALID_TOKEN);
     User.findOne({'_id': userId + ''}).exec(function(err, user) { // force strings on queries
         if (err) return callback(err);
         if (!user) return callback(L.ERR_UNKNOWN_USER);
