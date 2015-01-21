@@ -7,9 +7,9 @@ The First Bytes Society App gets right down to business by immersing the student
 ## Manifesto
 
 ### Don't be "right", be the _hook_
-Traditional CS curriculum focuses on teaching things the "right" way. These approaches may start a _proper_ or marketable language, start with the fundamentals (abstraction, encapsulation), dive into specifics (int vs. float vs. unsigned int), push the proper tools, and on and on. If someone had to learn all of the "right" ways of programming before they dove in, we would never have software.
+Traditional CS curriculum focuses on teaching things the "right" way. These approaches may start with a _proper_ or marketable language, start with the fundamentals (abstraction, encapsulation), dive into specifics (int vs. float vs. unsigned int), push the proper tools, testing, and on and on. If someone had to learn all of the "right" ways of programming before they dove in, we would never have software.
 
-The fact of the matter is most of software people had an initial _hook_ that opened their minds to the potential of programming in a real and impactful way. They usually aren't glamorous or ideal but they get the gears going. It may have been [programming on a TI-83 calculator](http://www.ticalc.org/programming/columns/83plus-bas/cherny/) instead of actually doing math homework, or exploring BASIC on an Atari or even editing a website. **First Bytes Society is first and foremost the hook. The other stuff will come later.**
+The fact of the matter is most software engineers had an initial _hook_ that opened their minds to the potential of programming in a real and impactful way. They usually aren't glamorous or ideal but they get the gears going. It may have been [programming on a TI-83 calculator](http://www.ticalc.org/programming/columns/83plus-bas/cherny/) instead of actually doing math homework, or exploring BASIC on an Atari or even editing a website. **First Bytes Society is first and foremost intended to be the "hook".**
 
 ### Code early and often
 Get students looking at code immediately. Immerse them in it. Promote exploration into the code by providing easy ways for students to manipulate code and see the impact of their edits immediately.
