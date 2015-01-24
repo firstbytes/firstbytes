@@ -61,13 +61,11 @@ exports.getUserFromRequest = function(req, callback) {
 // @param {userId} String user id to check against, if false will default
 // @param {function} callback (err, User)
 exports.getAndAssetUserFromRequest = function(req, userId, callback) {
-    var token = req.get('token');
-    console.log(token);
+    var token = req.get("token");
     if (!token) return callback(L.INVALID_TOKEN);
     if (userId === false) userId = req.session[token];
-    console.log(req.session[token], userId);
     if (req.session[token] !== userId) return callback(L.INVALID_TOKEN);
-    User.findOne({'_id': userId + ''}).exec(function(err, user) { // force strings on queries
+    User.findOne({"_id": userId + ""}).exec(function(err, user) { // force strings on queries
         if (err) return callback(err);
         if (!user) return callback(L.ERR_UNKNOWN_USER);
         callback(null, user);
