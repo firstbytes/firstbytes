@@ -12,10 +12,18 @@ var address_is_required = 'Email address is required',
     valid_email_is_required = 'Please use a valid email address',
     your_password_is_too_short = 'Your password must be at least 8 characters long';
 
+var acl = {
+    NONE: 0,
+    ADMIN: 1,
+    MENTOR: 2,
+    ADVISOR: 4
+};
+
 // todo add indicies to this thing
 schema = mongoose.Schema({
     name: {type: String, required: true},
     password: {type: String, required: true}, // password requirements?
+    acl: {type: Number, default: 0}, // what type of access does this user have? bitset.
     email: {
         type: String,
         required: address_is_required,

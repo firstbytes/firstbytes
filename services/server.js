@@ -21,7 +21,8 @@ var express = require('express'),
 var routes = {
   main: require('../routes'),
   user: require('../routes/user'),
-  project: require('../routes/project')
+  project: require('../routes/project'),
+  lesson: require('../routes/lesson')
 };
 
 var ERR_MUST_AUTHENTICATE = 'You must authenticate';
@@ -109,6 +110,9 @@ app.get('/user/:id/', routes.user.authFromToken);
 
 app.get('/user/:id/projects/', routes.user.projects);
 // app.get('/user/:id/projects/public/', routes.user.publicprojects);
+
+app.get('/lesson/:id/', routes.lesson.get);
+app.get('/lessons/:category/', routes.lesson.getByCategory);
 
 var listening = false, server;
 var listen = function() {

@@ -86,5 +86,22 @@
         $.ajax(url, conf);
     };
 
+    // @param {function} callback (string err, object lessons)
+    repo.fetchLessons = function(callback) {
+        var url;
+        url = '/lessons/Intro'; // sticking to default category for now "Intro", can switch this out in the future
+        $.ajax(url, {
+            type: 'get',
+            dataType: 'json',
+            // headers: {'token': token},
+            success: function(response, status, xhr) {
+                callback(null, response);
+            },
+            error: function(xhr) {
+                callback(L.GET_PROJECTS_ERROR);
+            }
+        });
+    };
+
     g.repo = repo;
 })(window);

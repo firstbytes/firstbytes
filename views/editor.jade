@@ -17,9 +17,9 @@ block content
             li.button#login-button(data-bind="visible: unauthenticated, click: cshowsignin") Sign In
             li.button#logout-button(data-bind="visible: authenticated, click: csignout") Sign Out
             li.button#projects-button(data-bind="visible: authenticated, click: cshowprojects") My Projects
-            li.button#lessons-button(data-bind="visible: authenticated, click: cnewproject") Lessons
+            li.button#lessons-button(data-bind="visible: authenticated, click: cshowlessons") Lessons
             li.button#logout-button(data-bind="visible: authenticated, click: cnewproject") New Project
-            li.button#reference-button(data-bind="click: cnewproject") The Manual
+            li.button#reference-button(data-bind="click: cshowreference") The Manual
             li(data-bind="text: username")
     iframe#sandbox(class="sandbox", src="/canvas", width="500", height="500", scrolling="off")
     div#editor(class="editor")
@@ -42,16 +42,21 @@ block content
         h1 Projects
         ul(data-bind="foreach: projects")
             li(data-bind="text: name, click: $parent.cprojectselect")
-    //- div#lessons.modal(data-bind="visible: showlessons")
-    //-     h1 Lessons
-    //-     ul(data-bind="foreach: lessons")
-    //-         li(data-bind="text: name, click: $parent.cprojectselect")
-    //- div#reference.modal(data-bind="visible: showreference")
-    //-     h1 Reference
-    //-     h3 The Basics
-    //-     h3 Shapes
-    //-     h3 Words (Text)
-    //-     h3 Movement (Animation)
+    div#lessons.modal(data-bind="visible: showlessons")
+        h1 Lessons
+        ul(data-bind="foreach: lessons")
+            li(data-bind="text: name, click: $parent.clessonselect")
+    div#reference.modal(data-bind="visible: showreference")
+        h1 Reference
+        p TODO
+        h3 The Basics
+        p TODO
+        h3 Shapes
+        p TODO
+        h3 Words (Text)
+        p TODO
+        h3 Movement (Animation)
+        p TODO
 
     script(type="text/javascript", src="/js/dom/appvm.js")
     script(type="text/javascript", src="/js/auth.js")

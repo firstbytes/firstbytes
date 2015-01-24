@@ -29,6 +29,7 @@
         this.state = ko.observable(data.state);
         this.userId = ko.observable(data.userId);
         this.privacy = ko.observable(data.privacy);
+        this.lesson = ko.observable(data.lesson);
     }
     // function Editor(data) {
     //     this.dirty = ko.observable(data.dirty);
@@ -44,6 +45,7 @@
         self.session = ko.observable(null); // new Session({})
         self.user = ko.observable(null); //new User({email: "asdlfkjals"})
         self.projects = ko.observableArray([]); // don't bother making these actual "Project" instances
+        self.lessons = ko.observableArray([]);
         // self.editor = ko.observable(new Editor({}));
         self.username = ko.computed(function() {
             return self.user() ? self.user().name() : L.DEFAULT_USERNAME_TEXT;
@@ -67,16 +69,18 @@
         });
 
         // modals. these feel awkward here.
-        modals = ['showlogin', 'showprojects'];
+        modals = ['showlogin', 'showprojects', 'showlessons', 'showreference'];
         for (var i in modals) {
             self[modals[i]] = ko.observable(false);
         }
+        // calculated based on whether or not we have one of our modals ready for displaying
         self.showmodal = ko.computed(function() {
             for (var i in modals) {
                 if (self[modals[i]]()) return true;
             }
             return false;
         }, self);
+        // hide all of our modals registered above ^
         self.chidemodal = function() {
             for (var i in modals) {
                 self[modals[i]](false);
@@ -130,7 +134,7 @@
             clearState();
         };
         self.cnewproject = function() {
-            // todo create a new project but warn if there are unsaved changes
+            // todo warn if there are unsaved changes on the current project
             self.project(new Project({}));
         };
         self.cshowprojects = function() {
@@ -147,6 +151,25 @@
         self.cprojectselect = function(project) {
             self.project(new Project(project));
             self.chidemodal();
+        };
+        self.cshowlessons = function() {
+            // fire off a request async - ideally have a loading state
+            repo.fetchLessons(function(err, lessons) {
+                self.lessons(lessons);
+            });
+            self.showlessons(true);
+        };
+        self.clessonselect = function(lesson) {
+            self.project(new Project({
+                name: lesson.name,
+                source: lesson.source,
+                lesson: lesson._id,
+                userId: self.user()._id() // server side will validate
+            }));
+            self.chidemodal();
+        };
+        self.cshowreference = function() {
+            self.showreference(true);
         };
         self.csave = function() {
             if (self.authenticated()) {
