@@ -46,6 +46,14 @@ grunt
 
 From here on, just running `grunt` from this directory will start up the app.
 
+### Testing
+
+Tests are built using nodeunit (I know, we're soo uncool). The tests are wired into grunt. You can run them via the following command:
+
+```
+grunt nodeunit
+```
+
 ## Contributing
 
 First Bytes Society App is open source under the MIT license. First Bytes will only be successful if the open source community rallies behind it. To contribute, please fork the repository, work on a topic branch, and submit open a pull request via GitHub.
