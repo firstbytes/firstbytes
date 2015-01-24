@@ -9,6 +9,10 @@
         GET_PROJECTS_ERROR: 'Uh oh. We were not able to fetch your projects. Make sure you are online.'
     };
 
+    // @param {string} user_id
+    // @param {string} token
+    // @param {object} project pojo representation of project
+    // @param {function} callback (string err, object response)
     repo.save = function(user_id, token, project, callback) {
         if (typeof project === 'string') {
             project = JSON.parse(project);
@@ -39,6 +43,9 @@
         }
     };
 
+    // @param {string} user_id
+    // @param {string} token
+    // @param {function} callback (string err, object projects)
     repo.fetchAll = function(user_id, token, callback) {
         var url;
         url = '/user/' + user_id + '/projects';
@@ -53,6 +60,30 @@
                 callback(L.GET_PROJECTS_ERROR);
             }
         });
+    };
+
+    // @param {string} id project id to fetch
+    // @param {string} token [optional] token to optionally authenticate with
+    // @param {function} callback (string err, object project)
+    repo.fetchProject = function(id, token, callback) {
+        if (typeof token === 'function' && typeof callback === 'undefined') {
+            callback = token;
+            token = undefined;
+        }
+        var url, conf;
+        url = '/project/' + id + '/';
+        conf = {
+            type: 'get',
+            dataType: 'json',
+            success: function(response, status, xhr) {
+                callback(null, response);
+            },
+            error: function(xhr) {
+                callback(L.GET_PROJECTS_ERROR);
+            }
+        };
+        if (token) conf.headers = {'token': token};
+        $.ajax(url, conf);
     };
 
     g.repo = repo;

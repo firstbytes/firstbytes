@@ -50,6 +50,20 @@ exports.update = function(req, res) {
     });
 };
 
+// GET /project/ID/
+exports.get = function(req, res) {
+    // Public projects don't require auth to be pulled
+    auth.getUserFromRequest(req, function(err, user) {
+        // if (err) return res.status(400).json({error: L.COULD_NOT_AUTH});
+        Project.findById(req.params.id, function(err, project) {
+            // todo public vs. private check
+            // if (err) return res.status(400).json({error: L.COULD_NOT_SAVE_PROJECT});
+            // if (project.userId.toString() !== user._id.toString()) return res.status(400).json({error: L.NOT_YOUR_PROJECT});
+            res.json(project);
+        });
+    });
+};
+
 // POST /project/ID/revisions/
 exports.saveRevision = function(req, res) {
     var pm = new ProjectManager(req.params.id);

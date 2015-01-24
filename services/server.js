@@ -30,8 +30,35 @@ var env = process.env.NODE_ENV || 'development';
 
 // app setup
 var app = express();
+
+// configurations
+// todo allow loading these all from an external config that is not required
+// to be in version control
+app.set('cookie.key', '2z9sS2c0ksx');
+app.set('session.secret', 'capital code horse pants');
+
+if (env === 'production') {
+  app.set('data.store', 'mongo');
+  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes');
+  app.set('data.redis', {host: '127.0.0.1', port: '9491', disableTTL: true});
+}
+
+if (env === 'development') {
+  // app.use(express.errorHandler());
+  app.set('data.store', 'mongo');
+  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes-dev');
+  app.set('data.redis', {host: '127.0.0.1', port: '9491', disableTTL: true});
+}
+
+if (env === 'testing') {
+  // app.use(express.errorHandler());
+  app.set('data.store', 'mongo');
+  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes-test');
+  app.set('data.redis', {host: '127.0.0.1', port: '9491', disableTTL: true});
+}
+
 var RedisStore = connectredis(session);
-var redissession = new RedisStore({host: "127.0.0.1", port: "9491", disableTTL: true}); // todo use config
+var redissession = new RedisStore(app.get('data.redis'));
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.resolve(__dirname + '/../views'));
@@ -41,8 +68,8 @@ app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 // app.use(express.logger('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(cookieParser('2z9sS2c0ksx'));
-app.use(session({secret: 'capital code horse pants', saveUninitialized: true, resave: true, store: redissession}));
+app.use(cookieParser(app.get('cookie.key')));
+app.use(session({secret: app.get('session.secret'), saveUninitialized: true, resave: true, store: redissession}));
 
 // app.use(express.methodOverride());
 // app.use(app.router);
@@ -51,26 +78,6 @@ app.use(express.static(path.resolve(__dirname + '/../public')));
 // authentication middleware
 // app.use(passport.initialize());
 // app.use(passport.session());
-
-if (env === 'production') {
-  // todo load from config
-  app.set('data.type', 'mongo');
-  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes');
-}
-
-if (env === 'development') {
-  // app.use(express.errorHandler());
-  // todo load from config
-  app.set('data.type', 'mongo');
-  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes-dev');
-}
-
-if (env === 'testing') {
-  // app.use(express.errorHandler());
-  // todo load from config
-  app.set('data.type', 'mongo');
-  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes-test');
-}
 
 // todo routes that require auth...
 var errorIfNoAuth = function (req, res, next) {
@@ -86,18 +93,14 @@ var redirectIfNoAuth = function (req, res, next) {
 // page routes
 app.get('/', routes.main.index);
 app.get('/canvas/?', routes.main.canvas);
+app.get('/stage/:id/', routes.main.stage);
+// 5456a64a4821d40000c092c8
 // app.get('/login/', routes.main.login);
 // app.get('/setup/', routes.main.setup);
 
-// json api routes
-// app.get('/project/:id/', routes.project.get);
-// app.post('/project/', routes.project.post);
-// app.put('/project/:id/', routes.project.put);
-// app.post('/project/:id/', routes.project.put); // overload
-// app.delete('/project/:id/', routes.project.delete);
-
-app.post('/project/', routes.project.create);
+app.get('/project/:id/', routes.project.get);
 app.put('/project/:id/', routes.project.update);
+app.post('/project/', routes.project.create);
 
 app.post('/user/auth/', routes.user.auth);
 app.post('/user/', routes.user.create);

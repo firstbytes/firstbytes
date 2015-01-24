@@ -10,12 +10,7 @@ exports.canvas = function(req, res){
   res.render("canvas");
 };
 
-// GET /login/ See user.js for other auth details
-exports.login = function(req, res) {
-    res.render("login");
-};
-
-// GET /setup/
-exports.setup = function(req, res) {
-    res.render("setup");
+// GET /stage/ID/
+exports.stage = function(req, res) {
+    res.render("stage", { id: req.params.id });
 };

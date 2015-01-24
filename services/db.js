@@ -1,3 +1,4 @@
+// singleton-ish. meh.
 var mongoose = require("mongoose");
 var db;
 
@@ -12,5 +13,6 @@ exports.connect = function(connectionString) {
 };
 
 exports.get = function() {
+    // todo lazy connect if connection has not yet been established
     return mongoose;
 };

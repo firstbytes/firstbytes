@@ -1,0 +1,20 @@
+#title {
+    text-align: center;
+    background: none;
+}
+
+#sandbox {
+    float: none;
+    position: relative;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: 50px;
+}
+
+footer {
+    color: #ccc;
+    text-align: center;
+    font-size: 9px;
+    text-transform: uppercase;
+    margin: 25px;
+}

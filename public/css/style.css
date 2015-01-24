@@ -50,9 +50,10 @@ nav ul li {
   color: #fff;
 }
 nav ul li.button {
-  background: #333;
+  background: #666;
   margin: 3px;
   cursor: pointer;
+  border-radius: 3px;
 }
 
 /* Modals */
