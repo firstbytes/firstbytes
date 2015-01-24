@@ -1,27 +1,27 @@
-var mongo = require("mongodb");
-var server = require("../../services/server")();
-var helper = require("./_helper")(server);
-var auth = require("../../services/auth/user-auth.js");
+var mongo = require('mongodb');
+var server = require('../../services/server')();
+var helper = require('./_helper')(server);
+var auth = require('../../services/auth/user-auth.js');
 
 exports.setUp = helper.setup;
 exports.tearDown = helper.teardown;
 
-var User = require("../../models/user.js");
+var User = require('../../models/user.js');
 
 exports.testCreation = function(test) {
     test.expect(3);
 
-    var password = "turing test!";
+    var password = 'turing test!';
     var u1 = new User({
-        name: "Alan Turing",
+        name: 'Alan Turing',
         password: password,
-        email: "alan@example.com"
+        email: 'alan@example.com'
     });
 
     u1.save(function(err, user) {
         test.ok(!err, err);
-        test.ok(user, "User was not created");
-        test.ok(user.password !== password, "Password was not hashed");
+        test.ok(user, 'User was not created');
+        test.ok(user.password !== password, 'Password was not hashed');
         test.done();
     });
 };
@@ -29,11 +29,11 @@ exports.testCreation = function(test) {
 exports.testToResponse = function(test) {
     test.expect(3);
 
-    var password = "turing test!";
+    var password = 'turing test!';
     var u1 = new User({
-        name: "Alan Turing",
+        name: 'Alan Turing',
         password: password,
-        email: "alan@example.com"
+        email: 'alan@example.com'
     });
 
     u1.save(function(err, user) {
@@ -48,12 +48,12 @@ exports.testToResponse = function(test) {
 exports.testUserFromRequest = function(test) {
     test.expect(1);
     var u1 = new User({
-        name: "Alan Turing",
-        password: "examplepassword",
-        email: "alan@example.com"
+        name: 'Alan Turing',
+        password: 'examplepassword',
+        email: 'alan@example.com'
     });
     u1.save(function(err, user) {
-        var token = "token-abc";
+        var token = 'token-abc';
         var fauxReq = { session: {}, get: function() { return token; }};
         fauxReq.session[token] = user._id;
         auth.getUserFromRequest(fauxReq, function(err, fetched) {
