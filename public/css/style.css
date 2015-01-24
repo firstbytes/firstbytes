@@ -58,16 +58,20 @@ nav ul li.button {
 
 /* Modals */
 .modal {
-  width: 300px;
+  width: 400px;
   background: #fff;
   color: #333;
-  padding: 20px;
+  padding: 0 20px;
   position: absolute;
   left: 50%;
-  margin-left: -160px;
-  top: 100px;
+  margin-left: -220px;
+  top: 10%;
   z-index: 100;
+  max-height: 80%;
+  overflow: scroll;
+  /*white-space: nowrap;*/
 }
+
 #overlay {
   background: #000;
   opacity: 0.5;
@@ -99,4 +103,51 @@ nav ul li.button {
 
 .projects {
   cursor: pointer;
+}
+
+ul.clickable {
+  list-style: none;
+  /*margin: 0;*/
+  padding: 0;
+}
+
+ul.clickable li {
+  list-style: none;
+  margin: 5px 0;
+  padding: 5px;
+  display: block;
+  cursor: pointer;
+  background: #eee;
+}
+
+ul.clickable li:hover {
+  background: #ccc;
+}
+
+/* Reference */
+#reference code {
+  display: block;
+  padding: 10px;
+  border: solid 1px #ccc;
+  border-radius: 3px;
+  background: #eee;
+}
+
+#reference table {
+  border: solid 1px #ccc;
+  border-width: 1px 1px 0 0;
+  padding: none;
+  margin: none;
+}
+
+#reference table td {
+  padding: 3px;
+  margin: none;
+  border: solid 1px #ccc;
+  border-width:  0 0 1px 1px;
+}
+
+#reference table tr, #reference table tbody {
+  padding: none;
+  margin: none;
 }

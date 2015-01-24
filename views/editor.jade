@@ -40,23 +40,220 @@ block content
             button(type="submit") Sign up
     div#projects.modal(data-bind="visible: showprojects")
         h1 Projects
-        ul(data-bind="foreach: projects")
+        ul.clickable(data-bind="foreach: projects")
             li(data-bind="text: name, click: $parent.cprojectselect")
     div#lessons.modal(data-bind="visible: showlessons")
         h1 Lessons
-        ul(data-bind="foreach: lessons")
+        ul.clickable(data-bind="foreach: lessons")
             li(data-bind="text: name, click: $parent.clessonselect")
     div#reference.modal(data-bind="visible: showreference")
-        h1 Reference
-        p TODO
-        h3 The Basics
-        p TODO
-        h3 Shapes
-        p TODO
-        h3 Words (Text)
-        p TODO
-        h3 Movement (Animation)
-        p TODO
+        //- Make this sticky
+        h1 The Sandbox Manual
+        //- input(type="search", placeholder="Search Manual")
+        p.
+            The Sandbox Manual is a guide to show you the instructions (also known as <strong>syntax</strong>) that you
+            can use to build your programs. The Manual will explain the instruction, the different ways to use it
+            (by changing what we call <strong>parameters</strong>), and show you an actual example that you can use and modify.
+        //- ul
+        //-     li
+        //-         a(href="#Painting") Painting
+        //-     li
+        //-         a(href="#Shapes") Shapes
+        //-     li
+        //-         a(href="#Words") Words
+        //-     li
+        //-         a(href="#Colors") Colors
+        //-     li
+        //-         a(href="#UserInput") User Input
+        //-     li
+        //-         a(href="#Animation") Animation
+        //-     li
+        //-         a(href="#Sandbox") About the Sandbox
+        h2 Painting
+        h3 Background Color
+        p Change the background color of your program
+        p Example: Change the background to green.
+        code.
+            FB.background(FB.GREEN);
+        h3 Paintbrush Color
+        p.
+            Change the "paint brush" that you will use when drawing shapes. Using this command alone, won't change anything
+            so don't worry if typing this in doesn't change anything right away.
+        p Example: Pick up a blue "paint brush".
+        code.
+            FB.fill(FB.BLUE);
+        p.
+            The options (or <strong>parameters</strong>)
+            <table>
+            <tr>
+                <td>1</td>
+                <td>Color</td>
+                <td>What color to use? (See colors section)</td></tr>
+            </table>
+        h2 Shapes
+        h3 Squares and Rectangles
+        p Draw a square or rectangle (with the color of your paintbrush)
+        p Example: Draw a rectangle at the position 10 left and 50 down, that is 100 wide and 200 high.
+        code.
+            FB.rect(10, 50, 100, 200);
+        p.
+            The options (or <strong>parameters</strong>)
+            <table>
+            <tr>
+                <td>1</td>
+                <td>X</td>
+                <td>How far to the left to place the rectangle?</td></tr>
+            <tr>
+                <td>2</td>
+                <td>Y</td>
+                <td>How far down to place the rectangle?</td></tr>
+            <tr>
+                <td>3</td>
+                <td>Width</td>
+                <td>How wide to make the rectangle?</td></tr>
+            <tr>
+                <td>4</td>
+                <td>Height</td>
+                <td>How tall to make the rectangle?</td></tr>
+            </table>
+        h3 Circles and Ellipses
+        p Draw a Circle or an Ellipse
+        p Example: Draw an Ellipse (a stretched circle) at the position 100 left and 75 down, that is 150 wide and 200 high .
+        code.
+            FB.ellipse(100, 75, 150, 200);
+        p.
+            The options (or <strong>parameters</strong>)
+            <table>
+            <tr><td>1</td>
+            <td>X </td>
+            <td>How far to the left to place the ellipse?</td></tr>
+            <tr><td>2</td>
+            <td>Y</td>
+            <td>How far down to place the ellipse?</td></tr>
+            <tr><td>3</td>
+            <td>Width</td>
+            <td>How wide to make the ellipse?</td></tr>
+            <tr><td>4</td>
+            <td>Height</td>
+            <td>How tall to make the ellipse?</td></tr>
+            </table>
+        h2 Words (Text)
+        p Write words to the Stage
+        p Example: Write the words "Hello, Pittsburgh!" at the position 50 left and 100 down.
+        code.
+            FB.text("Hello, Pittsburgh!", 50, 100);
+        p.
+            The options (or <strong>parameters</strong>)
+            <table>
+            <tr><td>1</td>
+            <td>Words</td>
+            <td>What letters/words will we draw on the Stage?</td></tr>
+            <tr><td>2</td>
+            <td>X</td>
+            <td>How far to the left to place our text?</td></tr>
+            <tr><td>3</td>
+            <td>Y</td>
+            <td>How far down to place the text?</td></tr>
+            </table>
+        h3 Font and font size
+        p.
+            Change the font and font size that you are using. This command works similar to the paintbrush
+            "fill" command in that it just sets up a change and may not immediately change something. Common
+            supported font names are "Arial", "Helvetica", "Times", and "Courier".
+        p Example: Change your font to "Times" and make the font size to "20".
+        code.
+            FB.textFont('Times', 20);
+        p.
+            The options (or <strong>parameters</strong>)
+            <table>
+            <tr><td>1</td>
+            <td>Font Name</td>
+            <td>What font should be used? ("Times", "Courier", "Arial", etc.)</td></tr>
+            <tr><td>2</td>
+            <td>Size</td>
+            <td>What size should the font be (number)?</td></tr>
+            <tr><td>3</td>
+            <td>Y</td>
+            <td>How far down to place the text?</td></tr>
+            </table>
+        p Additional Example: Use "Times" font to write a large greeting in white
+        code.
+            FB.fill(FB.WHITE);
+            FB.textFont('Times', 20);
+            Fb.text('Hello!', 100, 100);
+        h2 Colors
+        h3 List of Basic Colors
+        p Here is a list of named colors that the Editor supports
+        code
+            pre.
+                FB.WHITE
+                FB.BLACK
+                FB.RED
+                FB.GREEN
+                FB.BLUE
+                FB.PURPLE
+                FB.PINK
+                FB.ORANGE
+                FB.YELLOW
+                FB.GREY
+                FB.BROWN
+                FB.DARKRED
+                FB.DARKGREEN
+                FB.DARKBLUE
+                FB.DARKPURPLE
+                FB.DARKPINK
+                FB.DARKORANGE
+                FB.DARKYELLOW
+                FB.DARKGREY
+                FB.DARKBROWN
+        h3 Custom Colors
+        p Create your own colors by using FB.color. You can build colors by mixing red, green, and blue.
+        p Example: Create a light blue color using red, a lot of green, and a lot of blue.
+        code.
+            FB.color(200, 255, 255);
+        p.
+            The options (or <strong>parameters</strong>)
+            <table>
+            <tr><td>1</td>
+            <td>red</td>
+            <td>How much red to use in our color? (0 = No red UP TO 255 = As much red as possible)</td></tr>
+            <tr><td>2</td>
+            <td>Y</td>
+            <td>How much green to use in our color? (0 = No green UP TO 255 = As much green as possible)</td></tr>
+            <tr><td>3</td>
+            <td>Width</td>
+            <td>How much blue to use in our color? (0 = No blue UP TO 255 = As much blue as possible)</td></tr>
+            </table>
+        p Additional Example: Use your custom light blue color for the background
+        code.
+            FB.background(FB.color(200, 255, 255));
+        //- h2 User Input
+        //- h3 Mouse Clicking
+        //- h3 Mouse Movement
+        //- h3 Typing
+        //- h2 Animation
+        h2 About the Sandbox
+        h3 Intro
+        p.
+            Welcome to the Sandbox. This web application is your training grounds for learning to become a programmer!
+            It is here in this application that you will begin to program and see the results of your work!
+            The Sandbox is made up of two primary areas. The Editor and the Stage.
+        h3 The Editor
+        p.
+            The Editor appears on the left of the screen and looks a bit like a word document.
+            The Editor is where you will write your program by typing in a sequence of instructions for the computer to follow.
+        h3 The Stage
+        p.
+            The Stage appears on the right side of the screen as a large square area. This area is where you can view
+            the results of your program. The contents of the Stage will change as you type in new commands in the Editor.
+        h3 The Menu Bar
+        p.
+            You will also notice a menu bar above the Editor and the Stage. This is where you can do things like Sign in,
+            Create a new Program, Save a program and more.
+        h2 Advanced Documentation
+        p.
+            Most of the foundation for the Sandbox is built upon Processing.js. For a detailed reference of processing.js you
+            can visit the <a href="">processing.js reference</a>.
 
     script(type="text/javascript", src="/js/dom/appvm.js")
     script(type="text/javascript", src="/js/auth.js")
