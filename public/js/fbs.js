@@ -2,14 +2,15 @@
 // requires processing, zepto js
 
 // this is super basic and very naive about user input
-// have a fair amount of clean up to do here, but "working"
+// have a fair amount of clean up to do here, but 'working'
 $(function() {
     var canvas, $body, size = 500;
     window.kill = function() {}; // global hack for now
-    canvas = $("#canvas").get(0);
-    $body = $("body");
+    canvas = $('#canvas').get(0);
+    $body = $('body');
 
-    $(window).on("message", function(msg) {
+    $(window).on('message', function(msg) {
+        console.debug('Received Code: ' + msg.data);
         var draw, canvas, code, $script, build;
         kill();
         code = msg.data;
@@ -17,9 +18,9 @@ $(function() {
         // should consider something like structeredjs for inspecting source code
         build = (code.indexOf('FB.draw') === -1) ? buildSrcSimple : buildSrc;
         code = build(msg.data);
-        $("#canvas-script").remove();
-        $script = $("<script></script>").attr("id", "canvas-script")
-            .attr("src", code);
+        $('#canvas-script').remove();
+        $script = $('<script></script>').attr('id', 'canvas-script')
+            .attr('src', code);
         $body.append($script);
     }, false);
 
@@ -38,6 +39,6 @@ $(function() {
         return duri(src);
     };
     var duri = function(src) {
-        return "data:text/javascript," + encodeURI(src);
+        return 'data:text/javascript,' + encodeURI(src);
     };
 });

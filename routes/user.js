@@ -14,7 +14,7 @@ var createSession;
 // GET /user/ID/projects/?page=N&start=M
 exports.projects = function(req, res) {
   // res.send("json", {});
-  auth.getUserFromRequest(req, req.params.id, function(err, user) {
+  auth.getAndAssetUserFromRequest(req, req.params.id, function(err, user) {
     if (err) return res.status(401).json({'error': err});
     Project.find({}, function(err, projects) {
       if (err) return res.status(401).json({'error': err});
@@ -52,7 +52,7 @@ exports.create = function(req, res) {
 
 // GET /user/ID
 exports.authFromToken = function(req, res) {
-  auth.getUserFromRequest(req, req.params.id, function(err, user) {
+  auth.getAndAssetUserFromRequest(req, req.params.id, function(err, user) {
     if (err) return res.status(400).json({'error': err});
     res.json({"token": req.get('token'), "user": user.toResponse()});
   });
@@ -60,7 +60,7 @@ exports.authFromToken = function(req, res) {
 
 createSession = function(req, user) {
   var token = uuid.v4();
-  req.session.user = req.session[token] = user._id; // meh
+  req.session.user = req.session[token] = user._id;
   return token;
 };
 

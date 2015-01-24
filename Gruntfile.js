@@ -12,6 +12,9 @@ module.exports = function (grunt) {
         file: 'app.js'
       }
     },
+    nodeunit: {
+      all: ['test/**/test-*.js'],
+    },
     watch: {
       options: {
         nospawn: true,
@@ -68,6 +71,7 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-develop');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
   grunt.registerTask('default', ['develop', 'watch']);
 };

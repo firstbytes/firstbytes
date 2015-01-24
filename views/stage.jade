@@ -1,1 +1,50 @@
-//- Todo Stage for demoing a project (read only) sharing
+//- todo need to center the stage. css.
+extends main
+
+block head
+    link(rel="stylesheet", href="/css/stage.css")
+
+block content
+    header#title Loading a masterpiece...
+    iframe#sandbox(class="sandbox", src="/canvas", width="500", height="500", scrolling="off")
+    footer.
+        This was created using the First Bytes Society. You too can create awesome things. <a href="/">Start here</a>.
+    script(type="text/javascript", src="/js/dom/stage.js")
+    script(type="text/javascript", src="/js/repo.js")
+    script(type="text/javascript").
+    script(type="text/javascript").
+        // If this gets anymore complex, consider hooking up KO.
+        var L = {
+            FAILED_TO_LOAD: 'Blast! We failed to load this project.',
+            BROKEN_URL: 'Blast! Looks like there is something wrong with your URL.',
+        };
+        var display = function() {
+            // example id 5456a6624821d40000c092c9
+            var canvas, id, $title;
+            $title = $('#title');
+            id = getId();
+            if (!id) {
+                $title.html(L.BROKEN_URL);
+                return;
+            }
+            canvas = stage('#sandbox');
+            repo.fetchProject(id, function(err, project) {
+                if (err) {
+                    $title.html(L.FAILED_TO_LOAD);
+                    return;
+                }
+                $title.html('Project: ' + project.name);
+                canvas.publish(project.source);
+            });
+        };
+        var getId = function() {
+            var id = window.location.href.split('/');
+            if (id.length === 0) return false;
+            return id[id.length - 2];
+        };
+        $(function(){
+            // hack need to wait for the iframe to load, $() wasn't cutting it
+            // better solution would probably be to have the iframe notify the parent
+            // but meh.
+            setTimeout(display, 500);
+        });

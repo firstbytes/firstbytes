@@ -1,8 +1,9 @@
 // The beginning of KO integration. Need to pull in the stuff from
 // dom/editor.js and dom/user.js
+// requires moment.js, auth.js, repo.js
 (function(g) {
     var L = {
-        LAST_SAVED_AT: "Saved at ", // todo interpolation
+        LAST_SAVED_AT: "Saved ", // todo interpolation
         UNSAVED: "Unsaved",
         DEFAULT_USERNAME_TEXT: "Annonymous",
         MUST_LOGIN: "You must log in",
@@ -28,6 +29,7 @@
         this.state = ko.observable(data.state);
         this.userId = ko.observable(data.userId);
         this.privacy = ko.observable(data.privacy);
+        this.lesson = ko.observable(data.lesson);
     }
     // function Editor(data) {
     //     this.dirty = ko.observable(data.dirty);
@@ -43,6 +45,7 @@
         self.session = ko.observable(null); // new Session({})
         self.user = ko.observable(null); //new User({email: "asdlfkjals"})
         self.projects = ko.observableArray([]); // don't bother making these actual "Project" instances
+        self.lessons = ko.observableArray([]);
         // self.editor = ko.observable(new Editor({}));
         self.username = ko.computed(function() {
             return self.user() ? self.user().name() : L.DEFAULT_USERNAME_TEXT;
@@ -53,22 +56,31 @@
         self.dirty = ko.observable(false);
         self.err = ko.observable(null);
         self.message = ko.observable(null);
-        self.saveStatus = ko.observable(L.UNSAVED);
+        self.saveStatus = ko.observable('');
+        self.lastSaved = ko.observable(null);
 
         self.authenticated = ko.computed(function() { return !!self.session(); }, this);
         self.unauthenticated = ko.computed(function() { return !self.session(); }, this);
 
+        self.project.subscribe(function(value) {
+            // clear save status when project changes
+            self.saveStatus('');
+            self.lastSaved(null);
+        });
+
         // modals. these feel awkward here.
-        modals = ['showlogin', 'showprojects'];
+        modals = ['showlogin', 'showprojects', 'showlessons', 'showreference'];
         for (var i in modals) {
             self[modals[i]] = ko.observable(false);
         }
+        // calculated based on whether or not we have one of our modals ready for displaying
         self.showmodal = ko.computed(function() {
             for (var i in modals) {
                 if (self[modals[i]]()) return true;
             }
             return false;
         }, self);
+        // hide all of our modals registered above ^
         self.chidemodal = function() {
             for (var i in modals) {
                 self[modals[i]](false);
@@ -90,6 +102,8 @@
             self.message(null);
             self.err(null);
             self.dirty(false);
+            self.saveStatus('');
+            self.lastSaved(null);
             state.save();
         };
         populateKnockout = function(parsed) {
@@ -120,7 +134,7 @@
             clearState();
         };
         self.cnewproject = function() {
-            // todo create a new project but warn if there are unsaved changes
+            // todo warn if there are unsaved changes on the current project
             self.project(new Project({}));
         };
         self.cshowprojects = function() {
@@ -138,14 +152,37 @@
             self.project(new Project(project));
             self.chidemodal();
         };
+        self.cshowlessons = function() {
+            // fire off a request async - ideally have a loading state
+            repo.fetchLessons(function(err, lessons) {
+                self.lessons(lessons);
+            });
+            self.showlessons(true);
+        };
+        self.clessonselect = function(lesson) {
+            self.project(new Project({
+                name: lesson.name,
+                source: lesson.source,
+                lesson: lesson._id,
+                userId: self.user()._id() // server side will validate
+            }));
+            self.chidemodal();
+        };
+        self.cshowreference = function() {
+            self.showreference(true);
+        };
         self.csave = function() {
             if (self.authenticated()) {
-                repo.save(self.user()._id(), self.session().token(), ko.toJSON(self.project()), function(err, response) {
+                // todo show some sort of saving network indicator
+                self.project().userId(self.user()._id()); // make sure we're setting the user id on the project
+                repo.save(self.user()._id(), self.session().token(), ko.toJS(self.project()), function(err, response) {
                     if (err) {
-                        self.saveStatus = L.UNABLE_TO_SAVE;
+                        self.err(L.UNABLE_TO_SAVE);
                         return;
                     }
-                    self.saveStatus = L.LAST_SAVED_AT + new Date();
+                    self.project(new Project(response));
+                    self.lastSaved(new Date());
+                    self.saveStatus(L.LAST_SAVED_AT + moment(self.lastSaved()).fromNow());
                     self.dirty(false);
                 });
             } else {
@@ -155,15 +192,17 @@
                 self.showlogin(true);
             }
         };
-
-        // // example of how to subscribe to observable updates... http://knockoutjs.com/documentation/observables.html
-        // self.project().source.subscribe(function(value) {
-        //     console.log("wut", value);
-        // });
     }
+
     // Main View Model
     g.appvm = new AppViewModel();
     ko.applyBindings(g.appvm);
+
+    // update save status (and potentially other things) on a regular basis
+    setInterval(function() {
+        var last = appvm.lastSaved();
+        if (last) appvm.saveStatus(L.LAST_SAVED_AT + moment(last).fromNow());
+    }, 30000);
 
     // Form View Model?
     // g.loginvm

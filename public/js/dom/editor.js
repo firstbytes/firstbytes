@@ -7,6 +7,8 @@ $(function() {
     editor.getSession().setMode('ace/mode/javascript');
     editor.setShowPrintMargin(false);
 
+    var stageCanvas = stage('#sandbox');
+
     editor.getSession().on('changeAnnotation', function(){
         var annotations = editor.getSession().getAnnotations();
         var code = editor.getValue();
@@ -24,11 +26,7 @@ $(function() {
             return; // short circuit when there are errors
         }
 
-        // Publish the code to the iframe
-        var win = $('#sandbox').get(0).contentWindow;
-        var l = window.location;
-        var origin = l.protocol + '//' + l.host;
-        win.postMessage(code, origin); // todo listen for errors coming back from iframe
+        stageCanvas.publish(code);
     });
 
     appvm.projectObserver = ko.computed(function() {

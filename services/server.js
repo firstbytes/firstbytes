@@ -14,13 +14,15 @@ var express = require('express'),
   bodyParser = require('body-parser'),
   cookieParser = require('cookie-parser'),
   session = require('express-session'),
+  connectredis = require('connect-redis'),
   favicon = require('serve-favicon');
   // passport = require('./auth/user-auth.js');
 
 var routes = {
   main: require('../routes'),
   user: require('../routes/user'),
-  project: require('../routes/project')
+  project: require('../routes/project'),
+  lesson: require('../routes/lesson')
 };
 
 var ERR_MUST_AUTHENTICATE = 'You must authenticate';
@@ -30,6 +32,35 @@ var env = process.env.NODE_ENV || 'development';
 // app setup
 var app = express();
 
+// configurations
+// todo allow loading these all from an external config that is not required
+// to be in version control
+app.set('cookie.key', '2z9sS2c0ksx');
+app.set('session.secret', 'capital code horse pants');
+
+if (env === 'production') {
+  app.set('data.store', 'mongo');
+  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes');
+  app.set('data.redis', {host: '127.0.0.1', port: '9491', disableTTL: true});
+}
+
+if (env === 'development') {
+  // app.use(express.errorHandler());
+  app.set('data.store', 'mongo');
+  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes-dev');
+  app.set('data.redis', {host: '127.0.0.1', port: '9491', disableTTL: true});
+}
+
+if (env === 'testing') {
+  // app.use(express.errorHandler());
+  app.set('data.store', 'mongo');
+  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes-test');
+  app.set('data.redis', {host: '127.0.0.1', port: '9491', disableTTL: true});
+}
+
+var RedisStore = connectredis(session);
+var redissession = new RedisStore(app.get('data.redis'));
+
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.resolve(__dirname + '/../views'));
 app.set('view engine', 'jade');
@@ -38,8 +69,9 @@ app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 // app.use(express.logger('dev'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(cookieParser('2z9sS2c0ksx'));
-app.use(session({secret: 'capital code horse pants', saveUninitialized: true, resave: true})); // todo hook in redis connect
+app.use(cookieParser(app.get('cookie.key')));
+app.use(session({secret: app.get('session.secret'), saveUninitialized: true, resave: true, store: redissession}));
+
 // app.use(express.methodOverride());
 // app.use(app.router);
 app.use(express.static(path.resolve(__dirname + '/../public')));
@@ -47,26 +79,6 @@ app.use(express.static(path.resolve(__dirname + '/../public')));
 // authentication middleware
 // app.use(passport.initialize());
 // app.use(passport.session());
-
-if (env === 'production') {
-  // todo load from config
-  app.set('data.type', 'mongo');
-  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes');
-}
-
-if (env === 'development') {
-  // app.use(express.errorHandler());
-  // todo load from config
-  app.set('data.type', 'mongo');
-  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes-dev');
-}
-
-if (env === 'testing') {
-  // app.use(express.errorHandler());
-  // todo load from config
-  app.set('data.type', 'mongo');
-  app.set('data.mongo', 'mongodb://localhost:27017/firstbytes-test');
-}
 
 // todo routes that require auth...
 var errorIfNoAuth = function (req, res, next) {
@@ -82,18 +94,14 @@ var redirectIfNoAuth = function (req, res, next) {
 // page routes
 app.get('/', routes.main.index);
 app.get('/canvas/?', routes.main.canvas);
+app.get('/stage/:id/', routes.main.stage);
+// 5456a64a4821d40000c092c8
 // app.get('/login/', routes.main.login);
 // app.get('/setup/', routes.main.setup);
 
-// json api routes
-// app.get('/project/:id/', routes.project.get);
-// app.post('/project/', routes.project.post);
-// app.put('/project/:id/', routes.project.put);
-// app.post('/project/:id/', routes.project.put); // overload
-// app.delete('/project/:id/', routes.project.delete);
-
-app.post('/project/', routes.project.create);
+app.get('/project/:id/', routes.project.get);
 app.put('/project/:id/', routes.project.update);
+app.post('/project/', routes.project.create);
 
 app.post('/user/auth/', routes.user.auth);
 app.post('/user/', routes.user.create);
@@ -103,10 +111,13 @@ app.get('/user/:id/', routes.user.authFromToken);
 app.get('/user/:id/projects/', routes.user.projects);
 // app.get('/user/:id/projects/public/', routes.user.publicprojects);
 
-var listening = false;
+app.get('/lesson/:id/', routes.lesson.get);
+app.get('/lessons/:category/', routes.lesson.getByCategory);
+
+var listening = false, server;
 var listen = function() {
   if (listening) return;
-  http.createServer(app).listen(app.get('port'), function(){
+  server = http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
   });
   listening = true;
@@ -114,12 +125,22 @@ var listen = function() {
 var connected = false;
 var connect = function() {
   if (connected === true) return;
+  // console.log('Connecting to data source...');
   db.connect(app.get('data.mongo'));
   connected = true;
+  // console.log('Connected');
 };
 var disconnect = function() {
   db.disconnect();
   connected = false;
+};
+var shutdown = function() {
+  if (!listening || !server) return;
+  server.close();
+  listening = false;
+};
+var disconnectRedis = function() {
+  if (redissession) redissession.client.quit();
 };
 
 module.exports = function(conf) {
@@ -138,7 +159,12 @@ module.exports = function(conf) {
     },
     disconnect: function() {
       // disconnect data connections
+      disconnectRedis();
       disconnect();
+    },
+    shutdown: function() {
+      // shutdown the server - stop listening
+      shutdown();
     }
   };
 };
