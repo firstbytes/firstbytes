@@ -110,10 +110,10 @@ app.get('/user/:id/', routes.user.authFromToken);
 app.get('/user/:id/projects/', routes.user.projects);
 // app.get('/user/:id/projects/public/', routes.user.publicprojects);
 
-var listening = false;
+var listening = false, server;
 var listen = function() {
   if (listening) return;
-  http.createServer(app).listen(app.get('port'), function(){
+  server = http.createServer(app).listen(app.get('port'), function(){
     console.log('Express server listening on port ' + app.get('port'));
   });
   listening = true;
@@ -121,12 +121,22 @@ var listen = function() {
 var connected = false;
 var connect = function() {
   if (connected === true) return;
+  // console.log('Connecting to data source...');
   db.connect(app.get('data.mongo'));
   connected = true;
+  // console.log('Connected');
 };
 var disconnect = function() {
   db.disconnect();
   connected = false;
+};
+var shutdown = function() {
+  if (!listening || !server) return;
+  server.close();
+  listening = false;
+};
+var disconnectRedis = function() {
+  if (redissession) redissession.client.quit();
 };
 
 module.exports = function(conf) {
@@ -145,7 +155,12 @@ module.exports = function(conf) {
     },
     disconnect: function() {
       // disconnect data connections
+      disconnectRedis();
       disconnect();
+    },
+    shutdown: function() {
+      // shutdown the server - stop listening
+      shutdown();
     }
   };
 };

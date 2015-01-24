@@ -1,4 +1,3 @@
-var mongo = require('mongodb');
 var server = require('../../services/server')();
 var helper = require('./_helper')(server);
 var auth = require('../../services/auth/user-auth.js');
