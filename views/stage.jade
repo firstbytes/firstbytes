@@ -34,13 +34,12 @@ block content
                     return;
                 }
                 $title.html('Project: ' + project.name);
-                canvas.publish(project.source);
+                var code = Code().prep(project.source);
+                canvas.publishCode(code);
             });
         };
         var getId = function() {
-            var id = window.location.href.split('/');
-            if (id.length === 0) return false;
-            return id[id.length - 2];
+            return window.location.href.replace(/.+\/stage\//, '').replace(/[^0-9a-fA-F]+/, '');
         };
         $(function(){
             // hack need to wait for the iframe to load, $() wasn't cutting it

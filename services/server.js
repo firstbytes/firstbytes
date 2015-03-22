@@ -20,6 +20,7 @@ var express = require('express'),
 
 var routes = {
   main: require('../routes'),
+  admin: require('../routes/admin'),
   user: require('../routes/user'),
   project: require('../routes/project'),
   lesson: require('../routes/lesson')
@@ -60,6 +61,9 @@ if (env === 'testing') {
 
 var RedisStore = connectredis(session);
 var redissession = new RedisStore(app.get('data.redis'));
+redissession.client.on('error', function(err) {
+  console.warn('Unable to connect to redis server.', err);
+});
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.resolve(__dirname + '/../views'));
@@ -99,13 +103,20 @@ app.get('/stage/:id/', routes.main.stage);
 // app.get('/login/', routes.main.login);
 // app.get('/setup/', routes.main.setup);
 
+app.get('/admin/', routes.admin.index);
+
 app.get('/project/:id/', routes.project.get);
 app.put('/project/:id/', routes.project.update);
+app.delete('/project/:id/', routes.project.delete);
 app.post('/project/', routes.project.create);
+
+// app.get('/project/:id/revisions/', routes.project.create);
+app.post('/project/:id/revisions/', routes.project.saveRevision);
 
 app.post('/user/auth/', routes.user.auth);
 app.post('/user/', routes.user.create);
 app.get('/user/:id/', routes.user.authFromToken);
+app.get('/users/', routes.user.allStudents);
 // app.put('/user/:id/', routes.user.?);
 
 app.get('/user/:id/projects/', routes.user.projects);

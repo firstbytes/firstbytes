@@ -55,10 +55,11 @@ ProjectManager.prototype.saveRevision = function(project, details, callback) {
 
     // revisions should eventually be stored as a reference to a git hash as opposed to the source itself
     var rev = new Revision({
+        projectId: project._id,
         type: details.type === Revision.TYPE.EXPLICIT ? Revision.TYPE.EXPLICIT : Revision.TYPE.IMPLICIT,
         source: details.source || project.source,
         saved: details.saved || Date.now(),
-        err: [] // TODO parse source server side check for errors via jshint
+        err: details.err || [] // TODO parse source server side check for errors via jshint
     });
 
     rev.save(callback);

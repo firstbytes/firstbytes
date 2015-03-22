@@ -4,41 +4,54 @@
 // this is super basic and very naive about user input
 // have a fair amount of clean up to do here, but 'working'
 $(function() {
-    var canvas, $body, size = 500;
+    var canvas, $body, channels;
+    var onCode, onScreenshot;
     window.kill = function() {}; // global hack for now
     canvas = $('#canvas').get(0);
     $body = $('body');
 
-    $(window).on('message', function(msg) {
-        console.debug('Received Code: ' + msg.data);
-        var draw, canvas, code, $script, build;
+    onCode = function(msg, payload) {
+        console.debug('Received: ' + msg.data);
+        var draw, canvas, code, $script, build, request;
         kill();
-        code = msg.data;
-        // super hacky check to decide how to build the source uri
-        // should consider something like structeredjs for inspecting source code
-        build = (code.indexOf('FB.draw') === -1) ? buildSrcSimple : buildSrc;
-        code = build(msg.data);
+        code = payload.code;
+        code = duri(code);
         $('#canvas-script').remove();
         $script = $('<script></script>').attr('id', 'canvas-script')
             .attr('src', code);
         $body.append($script);
-    }, false);
+    };
 
-    var buildSrcSimple = function(src) {
-        // don't require defining draw/setup functions
-        // think we always want to require the namespacing for now
-        // this may change if we seek interoperability with KA sketches
-        src = 'FB.draw = function() {' + src + '\n;};';
-        return buildSrc(src);
+    onScreenshot = function(msg, payload) {
+        var data;
+        console.debug('Screenshot Request Received: ' + msg.data);
+        console.log(msg.source.saveScreenshot);
+        data = getScreenshot();
+        // msg.source.postMessage(data, msg.origin);
+        msg.source.saveScreenshot(data); // hack because ^ wasn't cooperating
     };
-    var buildSrc = function(src) {
-        src = 'var FB = new Processing(canvas, function(FB){' +
-            '_fb_init(FB, ' + size + ');' +
-            src + '\n;' +
-        '}); kill = function(){FB.exit();}';
-        return duri(src);
-    };
+
     var duri = function(src) {
         return 'data:text/javascript,' + encodeURI(src);
     };
+    var getScreenshot = function() {
+        return canvas.toDataURL();
+    };
+
+    channels = {
+        'code': onCode,
+        'screenshot': onScreenshot
+    };
+
+    $(window).on('message', function(msg) {
+        var payload;
+        try {
+            payload = JSON.parse(msg.data);
+        } catch(e) {
+            console.warn('Malformed request data');
+            return;
+        }
+        if (!channels[payload.type]) return;
+        channels[payload.type](msg, payload);
+    }, false);
 });

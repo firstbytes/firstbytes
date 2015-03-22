@@ -8,10 +8,13 @@
  */
 var Project = require("../models/project.js");
 var auth = require("../services/auth/user-auth.js");
+var ProjectManager = require("../services/project/manager.js");
 
 var L = {
     COULD_NOT_AUTH: 'Could not authenticate user',
     COULD_NOT_SAVE_PROJECT: 'Could not save project',
+    PROJECT_DOES_NOT_EXSIST: 'Project does not exist',
+    UNABLE_TO_DELETE: 'Unable to delete project',
     NOT_YOUR_PROJECT: 'Attempted to update a project that did not belong to the user'
 };
 
@@ -33,7 +36,7 @@ exports.update = function(req, res) {
     // todo use project manager
     var uid = req.body.userId || false,
         payload = req.body;
-    auth.getAndAssetUserFromRequest(req, uid, function(err, user) {
+    auth.getAndAssertUserFromRequest(req, uid, function(err, user) {
         if (err) return res.status(400).json({error: L.COULD_NOT_AUTH});
         Project.findById(payload._id, function(err, project) {
             if (err) return res.status(400).json({error: L.COULD_NOT_SAVE_PROJECT});
@@ -45,6 +48,22 @@ exports.update = function(req, res) {
             project.save(function(err) {
                 if (err) return res.status(400).json({error: L.COULD_NOT_SAVE_PROJECT});
                 res.json(project.toResponse());
+            });
+        });
+    });
+};
+
+// DELETE /project/ID/
+exports.delete = function(req, res) {
+    auth.getUserFromRequest(req, function(err, user) {
+        if (err || !user) return res.status(400).json({error: L.COULD_NOT_AUTH});
+        Project.findById(req.params.id, function(err, project) {
+            if (err) return res.status(400).json({error: L.PROJECT_DOES_NOT_EXSIST});
+            // console.log(project,project.userId.toString(), user._id.toString());
+            if (project.userId.toString() !== user._id.toString()) return res.status(400).json({error: L.NOT_YOUR_PROJECT});
+            Project.remove({_id: project._id}, function(err) {
+                if (err) return res.status(400).json({error: L.UNABLE_TO_DELETE});
+                res.json(project);
             });
         });
     });
@@ -66,12 +85,18 @@ exports.get = function(req, res) {
 
 // POST /project/ID/revisions/
 exports.saveRevision = function(req, res) {
-    var pm = new ProjectManager(req.params.id);
-    req.body.saved = Date.now(); // force it for now at least
-    pm.addRevision(req.body, function(err, revision) {
-        if (err) return res.json(500, {"error": err});
-        if (!revision) return res.status(404).json({"error": L.COULD_NOT_AUTH});
-        res.json(revision);
+    auth.getUserFromRequest(req, function(err, user) {
+        if (err || !user) return res.status(400).json({error: L.COULD_NOT_AUTH});
+        Project.findById(req.params.id, function(err, project) {
+            if (project.userId.toString() !== user._id.toString()) return res.status(400).json({error: L.NOT_YOUR_PROJECT});
+            var pm = new ProjectManager(req.params.id);
+            req.body.saved = Date.now(); // force it for now at least
+            pm.saveRevision(req.body, function(err, revision) {
+                if (err) return res.json(500, {"error": err});
+                if (!revision) return res.status(404).json({"error": L.COULD_NOT_AUTH});
+                res.json(revision);
+            });
+        });
     });
 };
 

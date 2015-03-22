@@ -12,6 +12,7 @@ var schema = mongoose.Schema({
     name: {type: String, required: L.NAME_REQUIRED},
     created: {type: Date, default: Date.now},
     description: {type: String, required: L.DESC_REQUIRED},
+    instructions: {type: String},
     source: String, // starting source if there is any
     category: {type: String, required: L.CATEGORY_REQUIRED}, // name of the category
     sequence: {type: Number, required: L.SEQ_REQUIRED}, // sequence of the lesson within the category
@@ -27,10 +28,5 @@ var Lesson = mongoose.model('Lesson', schema);
 
 // todo: ensure that there are no sequence dupes within any given category
 // Lesson.schema.path('sequence').validate(utils.validate.consts(Lesson.STATE));
-
-// // We always create a "Revision"
-// Lesson.post('save', function(Lesson) {
-//   deciding against it for now... keep models skinny and "low level"
-// });
 
 module.exports = Lesson;

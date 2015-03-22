@@ -48,7 +48,7 @@ exports.getByCategory = function(req, res) {
 //     // todo use project manager
 //     var uid = req.body.userId || false,
 //         payload = req.body;
-//     auth.getAndAssetUserFromRequest(req, uid, function(err, user) {
+//     auth.getAndAssertUserFromRequest(req, uid, function(err, user) {
 //         if (err) return res.status(400).json({error: L.COULD_NOT_AUTH});
 //         Project.findById(payload._id, function(err, project) {
 //             if (err) return res.status(400).json({error: L.COULD_NOT_SAVE_PROJECT});

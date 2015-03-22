@@ -1,43 +1,64 @@
 extends main
 
 block content
-    header First Bytes Society - Editor
     style.
         @import url("/css/form.css");
+    //- header First Bytes Society - Editor
     nav#menu
         div.error(data-bind="text: err, visible: err")
-        div.message(data-bind="text: message, visible: message")
+        //- div.message(data-bind="text: message, visible: message")
         ul
             li
-                input#projectname(placeholder="Project Name", data-bind="value: project() && project().name")
-            li#save-status(data-bind="text: saveStatus") --
+                input#projectname(placeholder="Project Name", data-bind="value: project() && project().name, visible: !project().lesson()")
+            li(data-bind="visible: !!project().lesson()",style="color:#ccc") Lesson:
+            li(data-bind="text: project() && project().name, visible: !!project().lesson()")
             li.button#save(data-bind="click: csave") Save
+            li.button#share(data-bind="visible: authenticated, click: cshare") Share
+            //- todo don't allow sharing when its a lesson. visible isn't respecting and / or.
+            li.button#delete(data-bind="visible: authenticated, click: cdelete") Delete
             //- li.button#revert Revert
-            //- li.button#screenshot Snap a Screenshot
-            li.button#login-button(data-bind="visible: unauthenticated, click: cshowsignin") Sign In
-            li.button#logout-button(data-bind="visible: authenticated, click: csignout") Sign Out
+            //- li.button#screenshot(data-bind="visible: authenticated, click: cscreenshot") Snap a Picture
             li.button#projects-button(data-bind="visible: authenticated, click: cshowprojects") My Projects
             li.button#lessons-button(data-bind="visible: authenticated, click: cshowlessons") Lessons
             li.button#logout-button(data-bind="visible: authenticated, click: cnewproject") New Project
             li.button#reference-button(data-bind="click: cshowreference") The Manual
+            li#save-status(data-bind="text: saveStatus") --
+
             li(data-bind="text: username")
+            li.button.right#login-button(data-bind="visible: unauthenticated, click: cshowsignin") Sign In
+            li.button.right#logout-button(data-bind="visible: authenticated, click: csignout") Sign Out
     iframe#sandbox(class="sandbox", src="/canvas", width="500", height="500", scrolling="off")
-    div#editor(class="editor")
-    div#overlay(data-bind="visible: showmodal, click: chidemodal")
+    div#editor.editor(data-bind="style: { height: !!project().lesson() ? '250px' : '500px'}")
+    div#instructions.instructions(data-bind="visible: !!project().lesson()")
+        div
+            h1(data-bind="text: project() && (project().name() + ' Instructions')")
+            p(data-bind="html: project() && project().instructions")
+    //- div#chat.chat
+    div#overlay.overlay(data-bind="visible: showmodal, click: chidemodal")
+    div.overlay(data-bind="visible: showloading")
+    div.overlay-text(data-bind="visible: showloading") Loading...
     div#login.modal(data-bind="visible: showlogin")
         div.error(data-bind="text: err, visible: err")
-        h1 Sign In
-        form(id="login-form", method="post", class="simple", action="#", data-bind="submit: cformlogin")
-            input(name="email", placeholder="Email", autocomplete="off")
-            input(name="password", placeholder="Password", autocomplete="off", type="password")
-            button(type="submit") Sign In
-        h3 or
-        h1 Create Account
-        form(id="signup-form", method="post", class="simple", action="#", data-bind="submit: cformsignup")
-            input(name="name", placeholder="Name", autocomplete="off")
-            input(name="email", placeholder="Email", autocomplete="off")
-            input(name="password", placeholder="Password", autocomplete="off", type="password")
-            button(type="submit") Sign up
+        h1 Sign In or Create an Account
+        p.
+            Save your progress by signing in to your First Bytes account. If you do not have one, you can
+            create a new account by providing your email.
+        div(style="height: 300px")
+            section(style="width: 50%; position: absolute; margin-left: 50%")
+                h1 Create Account
+                form(id="signup-form", method="post", class="simple", action="#", data-bind="submit: cformsignup")
+                    input(name="name", placeholder="Name", autocomplete="off")
+                    input(name="email", placeholder="Email", autocomplete="off")
+                    input(name="password", placeholder="Password", autocomplete="off", type="password")
+                    button(type="submit") Sign Up
+            div(style="width: 3px; height: 150px; background: #ccc; position: absolute; margin-left: 42.5%; margin-top: 25px")
+            section(style="width: 50%; position: absolute;")
+                h1 Sign In
+                form(id="login-form", method="post", class="simple", action="#", data-bind="submit: cformlogin")
+                    input(name="email", placeholder="Email", autocomplete="off")
+                    input(name="password", placeholder="Password", autocomplete="off", type="password")
+                    button(type="submit") Sign In
+        //- h3 or
     div#projects.modal(data-bind="visible: showprojects")
         h1 Projects
         ul.clickable(data-bind="foreach: projects")
@@ -47,41 +68,25 @@ block content
         ul.clickable(data-bind="foreach: lessons")
             li(data-bind="text: name, click: $parent.clessonselect")
     div#reference.modal(data-bind="visible: showreference")
-        //- Make this sticky
         h1 The Sandbox Manual
         //- input(type="search", placeholder="Search Manual")
         p.
             The Sandbox Manual is a guide to show you the instructions (also known as <strong>syntax</strong>) that you
             can use to build your programs. The Manual will explain the instruction, the different ways to use it
             (by changing what we call <strong>parameters</strong>), and show you an actual example that you can use and modify.
-        //- ul
-        //-     li
-        //-         a(href="#Painting") Painting
-        //-     li
-        //-         a(href="#Shapes") Shapes
-        //-     li
-        //-         a(href="#Words") Words
-        //-     li
-        //-         a(href="#Colors") Colors
-        //-     li
-        //-         a(href="#UserInput") User Input
-        //-     li
-        //-         a(href="#Animation") Animation
-        //-     li
-        //-         a(href="#Sandbox") About the Sandbox
         h2 Painting
         h3 Background Color
         p Change the background color of your program
         p Example: Change the background to green.
         code.
-            FB.background(FB.GREEN);
+            background(GREEN);
         h3 Paintbrush Color
         p.
             Change the "paint brush" that you will use when drawing shapes. Using this command alone, won't change anything
             so don't worry if typing this in doesn't change anything right away.
         p Example: Pick up a blue "paint brush".
         code.
-            FB.fill(FB.BLUE);
+            fill(BLUE);
         p.
             The options (or <strong>parameters</strong>)
             <table>
@@ -95,7 +100,7 @@ block content
         p Draw a square or rectangle (with the color of your paintbrush)
         p Example: Draw a rectangle at the position 10 left and 50 down, that is 100 wide and 200 high.
         code.
-            FB.rect(10, 50, 100, 200);
+            rect(10, 50, 100, 200);
         p.
             The options (or <strong>parameters</strong>)
             <table>
@@ -120,7 +125,7 @@ block content
         p Draw a Circle or an Ellipse
         p Example: Draw an Ellipse (a stretched circle) at the position 100 left and 75 down, that is 150 wide and 200 high .
         code.
-            FB.ellipse(100, 75, 150, 200);
+            ellipse(100, 75, 150, 200);
         p.
             The options (or <strong>parameters</strong>)
             <table>
@@ -141,7 +146,7 @@ block content
         p Write words to the Stage
         p Example: Write the words "Hello, Pittsburgh!" at the position 50 left and 100 down.
         code.
-            FB.text("Hello, Pittsburgh!", 50, 100);
+            text("Hello, Pittsburgh!", 50, 100);
         p.
             The options (or <strong>parameters</strong>)
             <table>
@@ -162,7 +167,7 @@ block content
             supported font names are "Arial", "Helvetica", "Times", and "Courier".
         p Example: Change your font to "Times" and make the font size to "20".
         code.
-            FB.textFont('Times', 20);
+            textFont('Times', 20);
         p.
             The options (or <strong>parameters</strong>)
             <table>
@@ -177,40 +182,41 @@ block content
             <td>How far down to place the text?</td></tr>
             </table>
         p Additional Example: Use "Times" font to write a large greeting in white
-        code.
-            FB.fill(FB.WHITE);
-            FB.textFont('Times', 20);
-            Fb.text('Hello!', 100, 100);
+        code
+            pre.
+                fill(WHITE);
+                textFont('Times', 20);
+                text('Hello!', 100, 100);
         h2 Colors
         h3 List of Basic Colors
         p Here is a list of named colors that the Editor supports
         code
             pre.
-                FB.WHITE
-                FB.BLACK
-                FB.RED
-                FB.GREEN
-                FB.BLUE
-                FB.PURPLE
-                FB.PINK
-                FB.ORANGE
-                FB.YELLOW
-                FB.GREY
-                FB.BROWN
-                FB.DARKRED
-                FB.DARKGREEN
-                FB.DARKBLUE
-                FB.DARKPURPLE
-                FB.DARKPINK
-                FB.DARKORANGE
-                FB.DARKYELLOW
-                FB.DARKGREY
-                FB.DARKBROWN
+                WHITE
+                BLACK
+                RED
+                GREEN
+                BLUE
+                PURPLE
+                PINK
+                ORANGE
+                YELLOW
+                GREY
+                BROWN
+                DARKRED
+                DARKGREEN
+                DARKBLUE
+                DARKPURPLE
+                DARKPINK
+                DARKORANGE
+                DARKYELLOW
+                DARKGREY
+                DARKBROWN
         h3 Custom Colors
-        p Create your own colors by using FB.color. You can build colors by mixing red, green, and blue.
+        p Create your own colors by using color. You can build colors by mixing red, green, and blue.
         p Example: Create a light blue color using red, a lot of green, and a lot of blue.
         code.
-            FB.color(200, 255, 255);
+            color(200, 255, 255);
         p.
             The options (or <strong>parameters</strong>)
             <table>
@@ -226,7 +232,7 @@ block content
             </table>
         p Additional Example: Use your custom light blue color for the background
         code.
-            FB.background(FB.color(200, 255, 255));
+            background(color(200, 255, 255));
         //- h2 User Input
         //- h3 Mouse Clicking
         //- h3 Mouse Movement
@@ -253,8 +259,9 @@ block content
         h2 Advanced Documentation
         p.
             Most of the foundation for the Sandbox is built upon Processing.js. For a detailed reference of processing.js you
-            can visit the <a href="">processing.js reference</a>.
+            can visit the <a href="http://processingjs.org/reference/">processing.js reference</a>.
 
+    script(type="text/javascript", src="/js/dom/komodels.js")
     script(type="text/javascript", src="/js/dom/appvm.js")
     script(type="text/javascript", src="/js/auth.js")
     script(type="text/javascript", src="/js/repo.js")
@@ -262,3 +269,4 @@ block content
     script(type="text/javascript", src="/js/dom/editor.js")
     script(type="text/javascript", src="/js/state.js")
     script(type="text/javascript", src="/components/momentjs/moment.js")
+    script(type="text/javascript", src="/components/marked/lib/marked.js")

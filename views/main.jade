@@ -2,16 +2,22 @@ doctype 5
 html
   head
     title= title
-    link(href="http://fonts.googleapis.com/css?family=Codystar", rel="stylesheet", type="text/css")
+    link(href="https://fonts.googleapis.com/css?family=Codystar", rel="stylesheet", type="text/css")
     link(rel="stylesheet", href="/css/style.css")
     //- todo require.js
-    script(src="http://localhost:35729/livereload.js")
+    //- script(src="http://localhost:35729/livereload.js")
     //- jquery for now. repalce with zepto again once modules are worked in
     //- script(src="/components/zepto/zepto.js")
     script(src="/components/jquery/dist/jquery.js")
+    script(src="/components/lodash/lodash.min.js")
     script(src="/components/knockout/dist/knockout.js")
     script(src="/components/easyModal.js/jquery.easyModal.js")
     script(src="/components/ace-builds/src-noconflict/ace.js")
+    script(src="/components/ace-builds/src-noconflict/ext-language_tools.js")
+    script(src="/components/jshint/dist/jshint.js")
+    script(src="/components/processing/processing.min.js")
+    script(src="/js/code.js")
+    script(src="/js/code/manual.js")
     block head
   body
     block content

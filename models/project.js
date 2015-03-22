@@ -1,5 +1,6 @@
 var mongoose = require('../services/db.js').get();
 var utils = require('../services/util/model.js');
+var Revision = require('./revision');
 
 // Project models a new project that the Coder is working on
 // For now it includes the source code, but this will soon change
@@ -37,9 +38,18 @@ Project.PRIVACY = PRIVACY;
 Project.schema.path('state').validate(utils.validate.consts(Project.STATE));
 Project.schema.path('privacy').validate(utils.validate.consts(Project.PRIVACY));
 
-// // We always create a "Revision"
-// Project.post('save', function(project) {
-//   deciding against it for now... keep models skinny and "low level"
-// });
+// We always create a "Revision"...
+// Would like to move this out of here and keep the models skinny.
+Project.schema.post('save', function(project) {
+  // Very naive solution for now. Will ultimately replace it with a real version control system.
+  var rev = new Revision({
+    projectId: project._id,
+    source: project.source,
+    type: Revision.EXPLICIT
+  });
+  rev.save(function() {
+     // do we need to wait?
+  });
+});
 
 module.exports = Project;
