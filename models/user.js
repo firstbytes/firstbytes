@@ -62,4 +62,5 @@ schema.pre('save', function(next) {
 });
 
 User = mongoose.model('User', schema);
+User.acl = acl;
 module.exports = User;
